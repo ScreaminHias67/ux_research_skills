@@ -140,4 +140,14 @@ Danach lassen sich die Skills per `/affinity-mapping` und `/research-summary` au
 
 Die Skills sind in Erprobung. Erfahrungen, Fehler und Ideen gern als Issue oder Pull Request – besonders interessant: Wo weicht die Map von eurer eigenen Auswertung ab, und was hat die QS übersehen?
 
+## Lizenz
+
+CC BY 4.0
+
+Diese Skills stehen unter der Creative Commons Namensnennung 4.0 International (CC BY 4.0). Den vollständigen Lizenztext findest du in der Datei LICENSE.
+
+Du darfst die Skills teilen, anpassen und weiterentwickeln, auch kommerziell, solange du die Urheberschaft nennst, einen Link zur Lizenz angibst und kenntlich machst, ob du Änderungen vorgenommen hast. Zum Beispiel so:
+
+„affinity-mapping“ und „research-summary“ von Hias Wrba, lizenziert unter CC BY 4.0. Angepasst von …
+
 **Autor:** Hias Wrba
