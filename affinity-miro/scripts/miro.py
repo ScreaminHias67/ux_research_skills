@@ -500,15 +500,34 @@ def transcript_hits(text, transcripts):
             if not ok:
                 break
         if ok:
-            hits.append((tid, first_line))
+            hits.append((tid, first_line, line_timestamp(t["lines"], first_line)))
     return hits
 
 
-def max_insight_id(map_path):
+TS_RE = re.compile(r"\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?")
+
+
+def line_timestamp(lines, n):
+    """Zeitstempel der Zeile n oder der nächsten Zeile davor (Folgezeilen eines Redebeitrags)."""
+    if not n:
+        return None
+    for i in range(n - 1, -1, -1):
+        m = TS_RE.match(lines[i].strip())
+        if m:
+            ts = m.group(1)
+            return ts if ts.count(":") == 2 else "00:" + ts
+    return None
+
+
+def max_insight_id(map_path, exclude=None):
+    """Höchste vergebene Insight-ID über alle Versionen – ohne die Zieldatei von --apply."""
     d = os.path.dirname(os.path.abspath(map_path))
     proj = project_of(map_path)
+    skip = os.path.abspath(exclude) if exclude else None
     mx = 0
     for p in glob.glob(os.path.join(d, "affinity-map_%s_v*.md" % glob.escape(proj))) + [map_path]:
+        if skip and os.path.abspath(p) == skip:
+            continue
         for m in re.finditer(r"\bI(\d+)\b", read(p)):
             mx = max(mx, int(m.group(1)))
     return mx
@@ -544,7 +563,7 @@ def cmd_diff(a):
     # --- Frames klassifizieren
     l2s = sorted([s for s in loose if s["cls"] == "l2"], key=lambda s: s["y"])
     l3s = sorted([s for s in loose if s["cls"] == "l3"], key=lambda s: s["y"])
-    next_id = max_insight_id(a.map) + 1
+    next_id = max_insight_id(a.map, a.apply) + 1
     board_ins = OrderedDict()
     pk_board, gap_board, loose_dp = [], [], []
     seen_ids = {}
@@ -586,7 +605,8 @@ def cmd_diff(a):
                 l2 = s
         if l2s and l2 is None:
             warn.append("%s: keinem pinken Insight-Cluster eindeutig zuzuordnen." % iid)
-        board_ins[iid] = {"title": title, "new": is_new, "items": items, "frame": fr,
+        frame_label = fr["title"] if is_new and fr["title"] and not re.match(r"^\s*I\d+\s*$", fr["title"]) else None
+        board_ins[iid] = {"title": title, "new": is_new, "items": items, "frame": fr, "frame_label": frame_label,
                           "l2": l2["text"] if l2 else None, "l3": l3["text"] if l3 else None}
 
     loose_dp = [s for s in loose if s["cls"] not in ("l2", "l3")]
@@ -664,8 +684,14 @@ def cmd_diff(a):
     sec = [
         ("Verschobene Datenpunkte", ["%s: %s → %s" % (d.upper(), where(o), where(t)) for d, o, t in moved]),
         ("Umformulierte Titel", ["%s: „%s“ → „%s“" % x for x in renamed]),
-        ("Neue Insights (vom Team gebildet)", ["%s „%s“ mit %d Zettel(n)" % (i, board_ins[i]["title"], len(members[i]) + sum(1 for t, _, _ in team_new if t == i)) for i in new_ins]),
-        ("Aufgelöste Insights", ["%s „%s“" % (i, doc.insights[i]["title"]) for i in dissolved]),
+        ("Neue Insights (vom Team gebildet)", ["%s „%s“ mit %d Zettel(n)%s%s" % (
+            i, board_ins[i]["title"], len(members[i]) + sum(1 for t, _, _ in team_new if t == i),
+            " · Frame „%s“" % board_ins[i]["frame_label"] if board_ins[i]["frame_label"] else "",
+            "".join(" · %s räumlich: „%s“" % (lv, board_ins[i][k]) for lv, k in (("L3", "l3"), ("L2", "l2")) if board_ins[i][k]))
+            for i in new_ins]),
+        ("Aufgelöste Insights", ["%s „%s“%s" % (i, doc.insights[i]["title"],
+                                                " (Frame noch auf dem Board, ohne Datenpunkte)" if i in board_ins else "")
+                                 for i in dissolved]),
         ("Neu zugeordnet (L2/L3, räumlich erkannt – bitte prüfen)", ["%s %s: „%s“ → „%s“" % (i, lv, o or "–", n or "–") for i, lv, o, n in regroup]),
         ("Neue Zettel ohne ID", []),
         ("Zitattext auf dem Board verändert (Original bleibt)", ["%s: Board „%s“" % (d.upper(), t[:80]) for d, t in edited]),
@@ -675,8 +701,8 @@ def cmd_diff(a):
     for target, text, hit in team_new:
         if isinstance(hit, tuple):
             pid = t2p.get(hit[0], "?")
-            sec[5][1].append("in %s: %s – im Transkript %s gefunden (Z. %s, vermutlich %s) → Datenpunkt" % (
-                where(target), quoted(text[:80]), hit[0], hit[1], pid))
+            sec[5][1].append("in %s: %s – im Transkript %s gefunden (%s, vermutlich %s) → Datenpunkt" % (
+                where(target), quoted(text[:80]), hit[0], hit[2] or "Z. %s" % hit[1], pid))
         elif isinstance(hit, list):
             sec[5][1].append("in %s: %s – in mehreren Transkripten gefunden (%s) → Rückfrage" % (
                 where(target), quoted(text[:80]), ", ".join(h[0] for h in hit)))
@@ -724,7 +750,7 @@ def cmd_diff(a):
             person_n[num] = person_n.get(num, 0) + 1
             dpid = "p%s-%03d" % (num, person_n[num])
             q = text if re.search(r"„.+“", text) else "„%s“" % text.strip("\"")
-            line = "- %s — %s · %s, Z. %s · neu ^%s" % (q, pid, hit[0], hit[1], dpid)
+            line = "- %s — %s · %s, %s · neu ^%s" % (q, pid, hit[0], hit[2] or "Z. %s" % hit[1], dpid)
         else:
             team_n += 1
             line = "- (Team-Notiz) %s — Team · Miro v%d · neu ^team-%03d" % (text, new_v, team_n)
@@ -751,7 +777,7 @@ def cmd_diff(a):
             continue
         skip = False
         out_prefix.append(l)
-    while out_prefix and not out_prefix[-1].strip():
+    while out_prefix and (not out_prefix[-1].strip() or out_prefix[-1].strip() == "---"):
         out_prefix.pop()
     body.extend(out_prefix)
     body.append("")
@@ -776,8 +802,10 @@ def cmd_diff(a):
             cur_l2 = l2
         changed = iid in moved_in or iid in moved_out or iid in new_lines
         if bi["new"]:
+            label = " Frame-Titel auf dem Board: „%s“." % bi["frame_label"] if bi["frame_label"] else ""
             body += ["", "%s %s „%s“" % (l1h, iid, bi["title"]), "#job/offen #team #neu",
-                     "> [!tip] Neu in v%d" % new_v, "> Vom Team auf dem Miro-Board gebildet. Job-Dimensionen und VoC-Text noch festlegen.", ""]
+                     "> [!tip] Neu in v%d" % new_v,
+                     "> Vom Team auf dem Miro-Board gebildet.%s Job-Dimensionen und VoC-Text noch festlegen." % label, ""]
         else:
             o = doc.insights[iid]
             title = bi["title"] if (iid, o["title"], bi["title"]) in renamed else o["title"]
@@ -813,9 +841,9 @@ def cmd_diff(a):
                 if renamed_here:
                     info.append("Titel vom Team umformuliert; vorher: „%s“" % o["title"])
                 if iid in moved_in:
-                    info.append("hinzu: " + ", ".join("%s (aus %s)" % (d, where(f)) for d, f in moved_in[iid]))
+                    info.append("hinzu: " + ", ".join("%s (aus %s)" % (d.upper(), where(f)) for d, f in moved_in[iid]))
                 if iid in moved_out:
-                    info.append("weg: " + ", ".join("%s (nach %s)" % (d, where(t)) for d, t in moved_out[iid]))
+                    info.append("weg: " + ", ".join("%s (nach %s)" % (d.upper(), where(t)) for d, t in moved_out[iid]))
                 if iid in new_lines:
                     info.append("%d neue Zettel vom Board" % len(new_lines[iid]))
                 body += ["> [!abstract] Geändert in v%d (Miro)" % new_v, "> " + "; ".join(info) + "."]
@@ -825,6 +853,18 @@ def cmd_diff(a):
         for d in members.get(iid, []):
             body.append(strip_step_marks(doc.dp_lines[d]))
         body += new_lines.get(iid, [])
+
+    method_notes = []
+    for i in dissolved:
+        o = doc.insights[i]
+        tags = " ".join(re.findall(r"#job/[\w/äöü-]+", " ".join([o["heading_rest"]] + o["extra"])))
+        where_to = ", ".join("%s → %s" % (d.upper(), where(t)) for d, t in moved_out.get(i, []))
+        method_notes.append("- %s „%s“%s auf dem Miro-Board aufgelöst (v%d)%s." % (
+            i, o["title"], " (%s)" % tags if tags else "", new_v, ": " + where_to if where_to else ""))
+    method_notes += ["- %s wurde auf dem Miro-Board entfernt (v%d) und liegt auf dem Parkplatz." % (d.upper(), new_v)
+                     for d in missing]
+    method_notes += ["- %s: Text auf dem Board verändert („%s“); Originalwortlaut beibehalten." % (d.upper(), t[:80])
+                     for d, t in edited]
 
     body += ["", "---", "", "## Parkplatz"]
     for d, t in placement.items():
@@ -843,16 +883,11 @@ def cmd_diff(a):
         if low.startswith("lücken"):
             body += ["- (Team, Miro v%d) %s" % (new_v, g) for g in gaps_new]
         if low.startswith("methodische notizen"):
-            for d in missing:
-                body.append("- %s wurde auf dem Miro-Board entfernt (v%d) und liegt auf dem Parkplatz." % (d, new_v))
-            for d, t in edited:
-                body.append("- %s: Text auf dem Board verändert („%s“); Originalwortlaut beibehalten." % (d, t[:80]))
+            body += method_notes
     if gaps_new and not any(k.lower().startswith("lücken") for k in doc.trailing):
         body += ["", "## Lücken & offene Fragen"] + ["- (Team, Miro v%d) %s" % (new_v, g) for g in gaps_new]
-    if (missing or edited) and not any(k.lower().startswith("methodische") for k in doc.trailing):
-        body += ["", "## Methodische Notizen"]
-        body += ["- %s wurde auf dem Miro-Board entfernt (v%d) und liegt auf dem Parkplatz." % (d, new_v) for d in missing]
-        body += ["- %s: Text auf dem Board verändert („%s“); Originalwortlaut beibehalten." % (d, t[:80]) for d, t in edited]
+    if method_notes and not any(k.lower().startswith("methodische") for k in doc.trailing):
+        body += ["", "## Methodische Notizen"] + method_notes
 
     text = re.sub(r"\n{3,}", "\n\n", "\n".join(body)).strip() + "\n"
     n_dp = len(placement) + len(team_new)

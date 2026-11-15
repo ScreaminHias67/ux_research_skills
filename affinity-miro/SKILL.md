@@ -47,15 +47,15 @@ Aufs Board kommt nur die **pseudonymisierte Map** – nie Transkripte, die Sprec
    python3 <skill>/scripts/miro.py export affinity-map_<p>_v<n>.md --board-url <URL> [--x0 X --y0 Y]
    ```
    Das Skript schreibt `miro-export_<p>_v<n>_teil<k>.svg` (aufgeteilt, falls groß) und die Sync-Datei `miro_<p>.json` (Board-URL, Version, Bereich). Folgeexporte landen automatisch rechts neben dem letzten Stand.
-5. **Auf das Board schreiben:** Die MCP-Workflow-Stufe `canvas_get_canvas_composer_skill` (ohne `step`) aufrufen, wie das MCP es verlangt. Die lange Formatbeschreibung (`step="dsl"`) **nicht laden** – das SVG kommt fertig aus dem Skript; nur bei einem Formatfehler nachladen. Dann jede Datei **unverändert** per `canvas_create_from_svg` senden (Inhalt der Datei als `svg`). Nichts umformulieren, nichts neu layouten.
-6. Meldet das MCP geänderte Größen, nur echte Überlappungen per `canvas_update_from_svg` beheben.
+5. **Auf das Board schreiben:** Die MCP-Workflow-Stufe `canvas_get_canvas_composer_skill` (ohne `step`) aufrufen, wie das MCP es verlangt. Die Antwort verweist auf weitere Stufen (`step="design"` bzw. `"edit"`) – diese und die lange Formatbeschreibung (`step="dsl"`) **nicht laden**: Das SVG kommt fertig aus dem Skript, und `canvas_create_from_svg` nimmt es ohne diese Stufen an (getestet). Nur bei einem Formatfehler nachladen. Dann jede Datei **unverändert** per `canvas_create_from_svg` senden (Inhalt der Datei als `svg`). Nichts umformulieren, nichts neu layouten.
+6. Meldet das MCP geänderte Größen, nur echte Überlappungen per `canvas_update_from_svg` beheben. Die Legende (Textfeld oben) meldet das MCP fast immer, weil ihre Höhe erst beim Rendern feststeht – sie hat 320 px Abstand nach unten und braucht keine Korrektur.
 7. Im Chat: Board-Link (mit `?moveToWidget=` auf die Legende, falls die ID bekannt ist), Map-Version, Zahl der Insights und Datenpunkte.
 
 ## 2. Miro einlesen
 
 1. **Bereich bestimmen:** `python3 <skill>/scripts/miro.py scope miro_<p>.json` → `miro_url`, `scope_x/y/width/height`, zugrunde liegende Map-Version.
 2. **Board lesen:** einmal `canvas_read_as_svg` mit diesem Bereich. Nicht mehrfach lesen, nicht das ganze Board durchsuchen.
-3. **Board-Stand als Datei:** Hat die Umgebung das Ergebnis selbst als Datei abgelegt, diesen Pfad verwenden. Sonst das zurückgegebene SVG **unverändert** als `miro-read_<p>_<datum>.svg` speichern.
+3. **Board-Stand als Datei:** Hat die Umgebung das Ergebnis selbst als Datei abgelegt (bei großen Boards), diesen Pfad verwenden – `miro.py` liest auch das JSON drumherum. Sonst das zurückgegebene `svg` **unverändert** als `miro-read_<p>_<datum>.svg` speichern (Entities wie `&lt;br /&gt;` und `&lt;p&gt;` nicht auflösen; Miro speichert Zeilenumbrüche so, und von Hand bearbeitete Zettel kommen als `<p>…</p>` zurück).
 4. **Änderungsliste erzeugen:**
    ```bash
    python3 <skill>/scripts/miro.py diff affinity-map_<p>_v<n>.md miro-read_<p>_<datum>.svg \
@@ -77,9 +77,9 @@ Aufs Board kommt nur die **pseudonymisierte Map** – nie Transkripte, die Sprec
 |---|---|
 | Sticky in anderen Frame verschoben | Datenpunkt wandert in den Insight; Insight `#team` + Callout „Geändert in“ mit Herkunft |
 | Blauer Titel umformuliert | neuer Titel, `#team #geaendert`, alter Titel im Callout |
-| Neuer Frame | neuer Insight mit neuer ID, `#team #neu #job/offen` |
-| Frame leer oder gelöscht | Insight aufgelöst |
-| Neues Sticky, Text steht im Transkript | Datenpunkt mit neuer ID und Fundstelle (Person aus dem Transkript) |
+| Neuer Frame | neuer Insight mit neuer ID, `#team #neu #job/offen`; Titel aus dem blauen Sticky, Frame-Titel des Teams im Callout; L2/L3-Zuordnung steht zur Prüfung in der Änderungsliste |
+| Frame leer oder gelöscht | Insight aufgelöst; alter Titel, Jobs und Verbleib der Datenpunkte in den methodischen Notizen |
+| Neues Sticky, Text steht im Transkript | Datenpunkt mit neuer ID und Fundstelle mit Zeitstempel (Person aus dem Transkript) |
 | Neues Sticky, eigener Text | `(Team-Notiz)` mit ID `team-00x` |
 | Text eines Datenpunkt-Stickies geändert | Originalwortlaut bleibt; Hinweis in den methodischen Notizen |
 | Sticky gelöscht oder nicht gefunden | Datenpunkt auf den Parkplatz; Hinweis in den methodischen Notizen |
