@@ -25,7 +25,7 @@ Ergebnis ist eine Markdown-Datei, die in Obsidian gut lesbar ist und per Links d
 
 - **Nichts Neues behaupten:** Die Summary enthält nur, was in der Map oder im Entwicklungsprotokoll steht. Keine neuen Fakten, Zahlen, Zitate oder Deutungen, die die Map nicht trägt.
 - **Jede Aussage hat eine Insight-ID:** Jede inhaltliche Aussage verweist auf mindestens einen Insight (`I06`) oder Aggregat (`L2-B`), verlinkt in die Map.
-- **Zitate unverändert übernehmen:** Zitate werden exakt aus der Map kopiert, inklusive Quellenangabe, und per Block-Link verlinkt: `[[affinity-map_<projekt>_v<n>#^p01-067|P01]]`.
+- **Zitate unverändert übernehmen:** Zitate werden exakt aus der Map kopiert, inklusive Quellenangabe, und per Block-Link verlinkt: `[[affinity-map_<projekt>_v<n>#^p01-067|P01]]`. Nur Interview-Datenpunkte zitieren, nie Team-Notizen.
 - **Belastbarkeit offenlegen:** Jeder Top-Insight bekommt eine Einschätzung der Belastbarkeit (siehe 3.2).
 - **Problemraum statt Lösung:** Handlungsfelder als „Wie könnten wir …?“-Fragen formulieren, nie als Maßnahme.
 - **Ich-Perspektive der Insights bleibt erhalten**, fließtext-Erläuterungen in neutraler Sprache.
@@ -46,16 +46,20 @@ Aus allen Insights 5–8 **Top-Insights** auswählen. Bewertet wird nach:
 | **Hebel** | Führen andere Insights auf ihn zurück (Grundproblem statt Symptom)? |
 | **Relevanz** | Wie direkt beantwortet er die Forschungsfrage? |
 | **Spannung** | Zeigt er einen Zielkonflikt oder Widerspruch, der für die Weiterarbeit entscheidend ist? |
-| **Stabilität** | Hat er sich laut Entwicklungsprotokoll über mehrere Interviews gehalten oder ist er volatil bzw. spät entstanden? |
+
+Der **Verlauf** laut Entwicklungsprotokoll (unverändert seit, neu geschnitten, spät entstanden) ist **kein Auswahl- oder Gütekriterium**: Die Map ordnet sich bottom-up mit jedem Interview neu, ein neu geschnittener Insight ist nicht schwächer als ein unveränderter. Der Verlauf erklärt in der Summary nur, wie das Bild entstanden ist.
 
 Wo die Map L2-Aggregate hat, bevorzugt auf L2-Ebene bündeln und die tragenden L1-Insights nennen. Häufigkeit allein ist kein Grund für die Auswahl; ein stark aufgeladener Einzelbefund kann Top-Insight sein, wird dann aber als solcher gekennzeichnet.
 
 Die Auswahl kurz begründen (ein Satz pro Top-Insight, welche Kriterien greifen).
 
 ### 3.2 Belastbarkeit
-- **stark:** mehrere Personen, mehrere Datenpunkte, keine Widersprüche, laut Protokoll über mehrere Versionen stabil
-- **mittel:** mehrere Datenpunkte, aber wenige Personen, einzelne Widersprüche oder volatiler Verlauf
-- **schwach / Hypothese:** Einzelstimme, dünne Datenbasis oder erst in den letzten Schritten entstanden
+Allein nach der **Evidenz in der finalen Map**, nicht nach dem Verlauf:
+- **stark:** mehrere Personen, mehrere Datenpunkte, keine Widersprüche
+- **mittel:** mehrere Datenpunkte, aber wenige Personen, oder einzelne Widersprüche
+- **schwach / Hypothese:** Einzelstimme oder dünne Datenbasis
+
+Team-Notizen (`(Team-Notiz)`, aus Miro) sind keine Interviewevidenz und zählen nicht zur Belastbarkeit.
 
 Bei frühen Forschungsständen (wenige Interviews) die gesamte Summary als vorläufig kennzeichnen.
 
@@ -114,9 +118,9 @@ Ein bis zwei Sätze zur Verteilung und zu auffälligen Kombinationen.
 
 ## Wie sich das Bild entwickelt hat
 Aus dem Entwicklungsprotokoll, drei bis sechs Sätze plus kurze Listen:
-- **Von Anfang an stabil:** … — I01, I06
+- **Früh sichtbar, im Kern gleich geblieben:** … — I01, I06
 - **Erst später sichtbar geworden:** … — I09
-- **Relativiert oder gekippt:** … — I05
+- **Neu geschnitten oder umgedeutet:** … — I12 (aus I04 + I07)
 - **Sättigung:** neue Insights pro Interview 6 → 3 → 2; vorsichtige Einschätzung
 Verweis: [[map-entwicklung_<projekt>#Gesamtbild der Entwicklung]]
 
@@ -149,7 +153,7 @@ Als „Wie könnten wir …?“-Fragen, jeweils mit Bezug:
 ## 5. Ablauf
 
 1. Input prüfen (Abschnitt 1).
-2. Alle Insights mit Job-Dimensionen, Personen und Datenpunktzahl erfassen; Spannungen, Widersprüche, Stärken und Lücken aus der Map sammeln; aus dem Entwicklungsprotokoll Status (stabil, volatil, spät), Erkenntnisverlauf und Sättigungseinschätzung übernehmen.
+2. Alle Insights mit Job-Dimensionen, Personen und Datenpunktzahl erfassen; Spannungen, Widersprüche, Stärken und Lücken aus der Map sammeln; aus dem Entwicklungsprotokoll Verlauf (unverändert seit, neu geschnitten, spät entstanden), Erkenntnisverlauf und Sättigungseinschätzung übernehmen.
 3. Top-Insights nach den Kriterien auswählen, Belastbarkeit bestimmen, Auswahl begründen.
 4. Pro Top-Insight ein bis zwei Zitate wählen, die den Kern am klarsten zeigen – nicht immer die dramatischsten.
 5. Summary nach Template schreiben, „Auf einen Blick“ zuletzt formulieren.
@@ -158,7 +162,8 @@ Als „Wie könnten wir …?“-Fragen, jeweils mit Bezug:
    - Jedes Zitat ist wortgleich in der Map vorhanden (am besten per Skript abgleichen) und der Block-Link zeigt auf die richtige ID.
    - Keine Lösungen, nur Handlungsfelder als Fragen.
    - Belastbarkeit und Grenzen sind benannt.
-   - Zahlen (Interviews, Teilnehmende, Insights) stimmen mit der Map überein; Aussagen zum Verlauf und zur Stabilität stimmen mit dem Entwicklungsprotokoll überein.
+   - Zahlen (Interviews, Teilnehmende, Insights) stimmen mit der Map überein; Aussagen zum Verlauf stimmen mit dem Entwicklungsprotokoll überein.
+   - Verlauf wird nirgends als Qualitätsurteil verwendet („stabil = belastbar“).
    - Keine Klarnamen.
 7. Datei ausliefern und im Chat in drei bis fünf Sätzen sagen, welche Insights ausgewählt wurden und warum. Kann das Tool keine Dateien schreiben, die Summary vollständig als Markdown-Codeblock mit dem vorgesehenen Dateinamen ausgeben. Kann es keinen Code ausführen, Zitate manuell gegen die Map abgleichen und das im Prüfvermerk festhalten.
 
