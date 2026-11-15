@@ -25,7 +25,7 @@ Ergebnis ist eine Markdown-Datei, die in Obsidian gut lesbar ist und per Links d
 
 - **Nichts Neues behaupten:** Die Summary enthält nur, was in der Map oder im Entwicklungsprotokoll steht. Keine neuen Fakten, Zahlen, Zitate oder Deutungen, die die Map nicht trägt.
 - **Jede Aussage hat eine Insight-ID:** Jede inhaltliche Aussage verweist auf mindestens einen Insight (`I06`) oder Aggregat (`L2-B`), verlinkt in die Map.
-- **Zitate unverändert übernehmen:** Zitate werden exakt aus der Map kopiert, inklusive Quellenangabe, und per Block-Link verlinkt: `[[affinity-map_<projekt>_v<n>#^p01-067|P01]]`. Nur Interview-Datenpunkte zitieren, nie Team-Notizen.
+- **Zitate unverändert übernehmen:** Zitate werden exakt aus der Map kopiert, inklusive Quellenangabe, und per Block-Link verlinkt: `[[affinity-map_<projekt>_v<n>#^p01-067|P01]]`. Team-Notizen dürfen genauso zitiert werden, mit Quelle `Team` (`[[…#^team-001|Team]]`).
 - **Belastbarkeit offenlegen:** Jeder Top-Insight bekommt eine Einschätzung der Belastbarkeit (siehe 3.2).
 - **Problemraum statt Lösung:** Handlungsfelder als „Wie könnten wir …?“-Fragen formulieren, nie als Maßnahme.
 - **Ich-Perspektive der Insights bleibt erhalten**, fließtext-Erläuterungen in neutraler Sprache.
@@ -59,7 +59,7 @@ Allein nach der **Evidenz in der finalen Map**, nicht nach dem Verlauf:
 - **mittel:** mehrere Datenpunkte, aber wenige Personen, oder einzelne Widersprüche
 - **schwach / Hypothese:** Einzelstimme oder dünne Datenbasis
 
-Team-Notizen (`(Team-Notiz)`, aus Miro) sind keine Interviewevidenz und zählen nicht zur Belastbarkeit.
+Team-Notizen (`(Team-Notiz)`, aus Miro) sind gleichwertige Datenpunkte; `Team` zählt dabei als eigene Quelle wie eine Person.
 
 Bei frühen Forschungsständen (wenige Interviews) die gesamte Summary als vorläufig kennzeichnen.
 

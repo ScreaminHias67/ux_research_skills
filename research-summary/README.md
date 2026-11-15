@@ -102,7 +102,7 @@ Der Verlauf eines Insights (seit v1 unverändert oder später neu geschnitten) i
 - **mittel:** wenige Personen oder einzelne Widersprüche
 - **schwach / Hypothese:** Einzelstimme oder dünne Datenbasis
 
-Team-Notizen aus Miro sind keine Interviewevidenz und werden nicht zitiert.
+Team-Notizen aus Miro sind gleichwertige Datenpunkte; das Team zählt dabei als eigene Quelle.
 
 ---
 

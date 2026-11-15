@@ -27,7 +27,7 @@ Voraussetzungen: Miro-MCP verbunden, Python 3, `scripts/miro.py` (nur Standardbi
 
 Eine Legende oben links nennt die Map-Version und die Regeln fürs Team: IDs nicht löschen oder ändern; verschieben, umformulieren, neue Frames und neue Zettel ohne ID sind willkommen.
 
-Datenpunkt → Insight ist über den Frame eindeutig. L2 und L3 werden **räumlich** zugeordnet (Frame gehört zum nächsten pinken bzw. grünen Sticky darüber/links davon). Unklare Fälle meldet das Skript; sie werden bei der Bestätigung geklärt.
+Datenpunkt → Insight ist über den Frame eindeutig. L2 und L3 werden **räumlich** zugeordnet (Frame gehört zum nächsten pinken bzw. grünen Sticky darüber/links davon). Die Board-Lage gilt; nur wenn sich ein Frame gar keinem pinken Sticky zuordnen lässt, meldet das Skript das.
 
 Tags kann das Miro-MCP nicht setzen. Personen stehen deshalb nur in der ID-Zeile. Tags, die das Team selbst setzt, werden gelesen, aber nicht ausgewertet.
 
@@ -62,13 +62,13 @@ Aufs Board kommt nur die **pseudonymisierte Map** – nie Transkripte, die Sprec
        --transcripts transkript_<p>_T*.txt --sync miro_<p>.json
    ```
    `v<n>` ist die Version, die zuletzt exportiert wurde (steht in `scope`). Gibt es inzwischen eine neuere Map-Version, Konflikt melden und klären, bevor weitergemacht wird.
-5. **Bestätigen lassen:** Änderungsliste zeigen und per Auswahl bestätigen lassen. Rückfragen bündeln: räumlich unklare L2/L3-Zuordnungen, neue Zettel, die in mehreren Transkripten gefunden wurden, gefundene Zitate, die eventuell von Interviewenden stammen.
+5. **Bestätigen lassen:** Änderungsliste zeigen und einmal als Ganzes per Auswahl bestätigen lassen. **Trust the humans:** Was das Team auf dem Board gebaut hat, gilt – Zuordnungen, Titel und neue Insights nicht inhaltlich hinterfragen. Rückfragen nur bei technischen Unklarheiten, gebündelt: Frame keinem Cluster zuordenbar, neuer Zettel in mehreren Transkripten gefunden, gefundenes Zitat stammt eventuell von Interviewenden.
 6. **Neue Version schreiben:** derselbe Befehl mit `--apply affinity-map_<p>_v<n+1>.md`. Danach in der neuen Datei nur gezielt nacharbeiten:
    - Überblick und Job-Verteilung mit `amap.py stats` ersetzen.
-   - Für neue Team-Insights (`#job/offen`) Job-Dimensionen aus den Datenpunkten bestimmen und einen kurzen VoC-Text ergänzen – als Vorschlag kennzeichnen. Trägt nur eine Team-Notiz den Insight, ist er keine Interviewevidenz: im Callout benennen.
+   - Für neue Team-Insights (`#job/offen`) Job-Dimensionen aus den Datenpunkten bestimmen und einen kurzen VoC-Text ergänzen – als Vorschlag kennzeichnen. Team-Notizen zählen dabei wie Datenpunkte aus Interviews.
    - Rückfragen-Ergebnisse aus Schritt 5 einarbeiten.
 7. **Entwicklungsprotokoll:** Eintrag „v<n+1> – Miro“ anhängen (verschoben, umformuliert, neu gebildet, aufgelöst, neue Zettel, Team-Notizen), Gesamtbild aktualisieren, Verlaufstabelle mit `amap.py trend`.
-8. **QS** nach `affinity-mapping/references/qs.md`, mit `amap.py check --previous affinity-map_<p>_v<n>.md --speakers sprecher_<p>.json`. Besonderheit: **Team-Titel (`#team`) nicht zurücksetzen**, nicht gedeckte Titel nur als Hinweis im QS-Bericht.
+8. **QS** nach `affinity-mapping/references/qs.md`, mit `amap.py check --previous affinity-map_<p>_v<n>.md --speakers sprecher_<p>.json`. Besonderheit: **Team-Änderungen (`#team`) nicht zurücksetzen und nicht inhaltlich bewerten** – nur Mechanik prüfen.
 9. Im Chat: maßgebliche Änderungen und QS-Ergebnis.
 
 ### Was mit Team-Änderungen passiert (macht `miro.py diff --apply`)
@@ -77,10 +77,10 @@ Aufs Board kommt nur die **pseudonymisierte Map** – nie Transkripte, die Sprec
 |---|---|
 | Sticky in anderen Frame verschoben | Datenpunkt wandert in den Insight; Insight `#team` + Callout „Geändert in“ mit Herkunft |
 | Blauer Titel umformuliert | neuer Titel, `#team #geaendert`, alter Titel im Callout |
-| Neuer Frame | neuer Insight mit neuer ID, `#team #neu #job/offen`; Titel aus dem blauen Sticky, Frame-Titel des Teams im Callout; L2/L3-Zuordnung steht zur Prüfung in der Änderungsliste |
+| Neuer Frame | neuer Insight mit neuer ID, `#team #neu #job/offen`; Titel aus dem blauen Sticky, Frame-Titel des Teams im Callout; L2/L3 nach Board-Lage |
 | Frame leer oder gelöscht | Insight aufgelöst; alter Titel, Jobs und Verbleib der Datenpunkte in den methodischen Notizen |
 | Neues Sticky, Text steht im Transkript | Datenpunkt mit neuer ID und Fundstelle mit Zeitstempel (Person aus dem Transkript) |
-| Neues Sticky, eigener Text | `(Team-Notiz)` mit ID `team-00x` |
+| Neues Sticky, eigener Text | `(Team-Notiz)` mit ID `team-00x` – gleichwertiger Datenpunkt, Quelle `Team` |
 | Text eines Datenpunkt-Stickies geändert | Originalwortlaut bleibt; Hinweis in den methodischen Notizen |
 | Sticky gelöscht oder nicht gefunden | Datenpunkt auf den Parkplatz; Hinweis in den methodischen Notizen |
 | Neues Sticky im Lücken-Frame | neue Zeile unter „Lücken & offene Fragen“ |
@@ -97,7 +97,7 @@ Nichts wird auf dem Board gelöscht. Der Skill sendet nie `data-deleted`.
 ## Grenzen
 
 - Kommentare, Reaktionen und Votes auf dem Board werden nicht ausgewertet.
-- Räumliche L2/L3-Zuordnung kann bei stark umgebauten Boards unsicher sein – deshalb die Bestätigung.
+- Räumliche L2/L3-Zuordnung folgt der Board-Lage. Liegt ein Frame ungünstig, landet er beim nächsten pinken Sticky – das Team korrigiert das auf dem Board, nicht der Skill.
 - Der Lesebereich ist der Bereich des letzten Exports plus Rand. Zettel weit außerhalb werden nicht gefunden und als „vom Board entfernt“ gemeldet.
 
 Sprache: Sprache der Map. Im Deutschen geschlechterinklusiv mit Doppelpunkt.

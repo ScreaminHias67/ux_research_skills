@@ -63,7 +63,7 @@ Geprüft werden alle Insights, die in diesem Schritt neu, verändert, bestätigt
 - **Callout-Texte:** Jede Sachbehauptung ist durch einen Datenpunkt belegt. Deutungen sind als Deutung formuliert („wirkt“, „deutet darauf hin“).
 - **Job-Dimensionen:** jede vergebene Dimension durch mindestens einen konkreten Datenpunkt gestützt.
 - **Herkunftsvermerke** („vereint I04 + I07“) stimmen mit den tatsächlich gewanderten Datenpunkten überein.
-- **Team-Titel** (`#team`, aus Miro): nicht zurücksetzen. Ist ein Team-Titel nicht durch die Datenpunkte gedeckt, nur als Hinweis im QS-Bericht nennen – die Deutungshoheit liegt beim Team.
+- **Team-Änderungen** (`#team`, aus Miro): Titel, Zuordnungen und neue Insights des Teams nicht zurücksetzen und nicht inhaltlich bewerten – die Deutungshoheit liegt beim Team. Die QS prüft hier nur Mechanik (IDs, Zitate, Zählungen).
 - **Kontext, Lücken, Notizen:** Angaben über Personen und Organisation stehen im Transkript oder wurden von der Nutzer:in genannt.
 
 ## Ebene C – Struktur und Konsistenz

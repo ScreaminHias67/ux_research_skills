@@ -322,8 +322,9 @@ def parse_map(md):
             dps.append(dp)
             if dp["insight"]:
                 insights[cur]["dps"].append(dpid)
-                if dp["person"] and dp["person"] != "TEAM":
-                    insights[cur]["persons"].add(dp["person"])
+                if dp["person"]:
+                    # Team-Notizen sind gleichwertige Datenpunkte; "Team" zählt als eigene Quelle
+                    insights[cur]["persons"].add("Team" if dp["person"] == "TEAM" else dp["person"])
             continue
 
         if cur and section == "insight":
@@ -597,7 +598,7 @@ def cmd_check(a):
                     errors.append("C  Überblick %s: %s Datenpunkte, tatsächlich %d" % (iid, row[2], len(ins["dps"])))
             except ValueError:
                 pass
-            listed = set(re.findall(r"P\d+", row[3]))
+            listed = set(re.findall(r"P\d+|\bTeam\b", row[3]))
             if listed != ins["persons"]:
                 errors.append("C  Überblick %s: Personen %s, tatsächlich %s" % (
                     iid, ", ".join(sorted(listed)) or "–", ", ".join(sorted(ins["persons"])) or "–"))

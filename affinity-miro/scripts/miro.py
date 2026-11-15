@@ -687,12 +687,12 @@ def cmd_diff(a):
         ("Neue Insights (vom Team gebildet)", ["%s „%s“ mit %d Zettel(n)%s%s" % (
             i, board_ins[i]["title"], len(members[i]) + sum(1 for t, _, _ in team_new if t == i),
             " · Frame „%s“" % board_ins[i]["frame_label"] if board_ins[i]["frame_label"] else "",
-            "".join(" · %s räumlich: „%s“" % (lv, board_ins[i][k]) for lv, k in (("L3", "l3"), ("L2", "l2")) if board_ins[i][k]))
+            "".join(" · %s: „%s“" % (lv, board_ins[i][k]) for lv, k in (("L3", "l3"), ("L2", "l2")) if board_ins[i][k]))
             for i in new_ins]),
         ("Aufgelöste Insights", ["%s „%s“%s" % (i, doc.insights[i]["title"],
                                                 " (Frame noch auf dem Board, ohne Datenpunkte)" if i in board_ins else "")
                                  for i in dissolved]),
-        ("Neu zugeordnet (L2/L3, räumlich erkannt – bitte prüfen)", ["%s %s: „%s“ → „%s“" % (i, lv, o or "–", n or "–") for i, lv, o, n in regroup]),
+        ("Neu zugeordnet (L2/L3 nach Board-Lage)", ["%s %s: „%s“ → „%s“" % (i, lv, o or "–", n or "–") for i, lv, o, n in regroup]),
         ("Neue Zettel ohne ID", []),
         ("Zitattext auf dem Board verändert (Original bleibt)", ["%s: Board „%s“" % (d.upper(), t[:80]) for d, t in edited]),
         ("Vom Board entfernt (→ Parkplatz)", [d.upper() for d in missing]),

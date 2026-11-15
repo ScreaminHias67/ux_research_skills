@@ -42,7 +42,7 @@ Ohne Codeausführung: alles manuell nach denselben Regeln, im QS-Bericht vermerk
 - **Zitierkonventionen:** Auslassungen nur `[…]`; Pseudonymisierung nur in eckigen Klammern (`[UX-Kollegin]`); Kontext nur außerhalb der Anführungszeichen in runden Klammern. Sonst kein Wort verändern, auch keine Fehler korrigieren.
 - **Keine Interpretation** auf L0.
 - Beobachtungen der Interviewenden (Zögern, Lachen) als `(Beobachtung)`. Aussagen der Interviewenden sind **nie** Datenpunkte.
-- `(Team-Notiz)`: Ergänzungen des Teams aus Miro (Typ `^team-001`). Sie sind keine Interviewevidenz und tragen allein keinen Insight.
+- `(Team-Notiz)`: Ergänzungen des Teams aus Miro (Typ `^team-001`). Sie sind gleichwertige Datenpunkte: Sie zählen mit, dürfen allein einen Insight tragen und gelten als eigene Quelle `Team` neben den Personen.
 - **IDs:** `P01-007`, über alle Versionen stabil. Personen pseudonymisiert in Einarbeitungsreihenfolge. Klarnamen, Firmen- und Ortsangaben entfernen oder generalisieren.
 
 ### L1 – Voice of the Customer
