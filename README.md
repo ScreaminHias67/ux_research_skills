@@ -1,11 +1,12 @@
 [README.md](https://github.com/user-attachments/files/34439756/README.md)
 # UX-Research-Skills für KI-Assistenten
 
-Zwei Agent Skills im offenen SKILL.md-Format, die die Auswertung qualitativer Nutzer:innen-Interviews unterstützen – von der Affinity Map bis zur Übergabe der Ergebnisse. Beide arbeiten mit Markdown-Dateien, die sich gut in [Obsidian](https://obsidian.md) lesen und verlinken lassen.
+Drei Agent Skills im offenen SKILL.md-Format, die die Auswertung qualitativer Nutzer:innen-Interviews unterstützen – von der Affinity Map über die gemeinsame Arbeit im Team auf einem Miro-Board bis zur Übergabe der Ergebnisse. Beide arbeiten mit Markdown-Dateien, die sich gut in [Obsidian](https://obsidian.md) lesen und verlinken lassen.
 
 | Skill | Was er macht |
 |---|---|
-| [`affinity-mapping`](./affinity-mapping) | Baut aus Interviewtranskripten Schritt für Schritt eine Affinity Map – vom Datenpunkt bis zum Insight – und dokumentiert, wie sie sich mit jedem Interview verändert |
+| [`affinity-mapping`](./affinity-mapping) | Baut aus Interviewtranskripten Schritt für Schritt und emergent eine Affinity Map – vom Datenpunkt bis zum Insight – und dokumentiert, wie sich das Verständnis mit jedem Interview verschiebt |
+| [`affinity-miro`](./affinity-miro) | Bringt die Map auf ein Miro-Board und liest die Änderungen des Teams in eine neue Map-Version zurück |
 | [`research-summary`](./research-summary) | Verdichtet die finale Map und ihr Entwicklungsprotokoll zu einer kompakten Research-Summary als Übergabedokument |
 
 > Die Skills sind auf Deutsch geschrieben und erzeugen deutschsprachige Ergebnisse (geschlechterinklusiv mit Doppelpunkt). Bei Transkripten in anderen Sprachen arbeiten sie in deren Sprache.
@@ -27,7 +28,7 @@ Maps und Summaries sind Arbeitsstände. Die Deutungshoheit bleibt bei den Mensch
 - **Aufzeichnung nur mit Einwilligung:** Interviews werden nur aufgezeichnet und transkribiert, wenn alle Gesprächspartner:innen vorher informiert eingewilligt haben – auch in die Auswertung mit KI.
 - **Datenschutz mitdenken:** Transkripte nur in dafür freigegebenen KI-Werkzeugen verarbeiten, identifizierende Angaben möglichst vor dem Upload entfernen, sensible Inhalte nicht unnötig übernehmen, Ergebnisse geschützt ablegen und fristgerecht löschen.
 
-Details stehen in den READMEs der beiden Skills. Diese Hinweise ersetzen keine Rechtsberatung – im Zweifel die zuständigen Datenschutzbeauftragten einbeziehen.
+Details stehen in den READMEs der Skills. Diese Hinweise ersetzen keine Rechtsberatung – im Zweifel die zuständigen Datenschutzbeauftragten einbeziehen.
 
 ---
 
@@ -42,12 +43,14 @@ flowchart LR
     M1 -.-> E[Entwicklungsprotokoll]
     M2 -.-> E
     Mn -.-> E
+    Mn <-.-> B[Miro-Board]
     Mn --> S[Research-Summary]
     E --> S
 ```
 
-1. **`affinity-mapping`** startet mit dem ersten Transkript (v1) und arbeitet jedes weitere einzeln ein. Jede Version wird gegen die Transkripte geprüft; alle Änderungen landen im Entwicklungsprotokoll.
-2. **`research-summary`** nimmt die finale, geprüfte Map und das Entwicklungsprotokoll und erstellt daraus die Übergabe an Team, Auftraggeber:innen oder einen Workshop.
+1. **`affinity-mapping`** startet mit einem oder zwei Transkripten (v1) und arbeitet jedes weitere einzeln ein – mit offener Neuordnung statt Bestandsschutz. Vor jeder Verarbeitung wird die Sprecherzuordnung bestätigt. Jede Version wird gegen die Transkripte geprüft; alle Änderungen landen im Entwicklungsprotokoll.
+2. **`affinity-miro`** (optional) bringt eine Map-Version aufs Board. Das Team sortiert, formuliert und ergänzt; der Skill liest das ein und erzeugt nach Bestätigung eine neue Map-Version.
+3. **`research-summary`** nimmt die finale, geprüfte Map und das Entwicklungsprotokoll und erstellt daraus die Übergabe an Team, Auftraggeber:innen oder einen Workshop.
 
 ---
 
@@ -58,27 +61,44 @@ flowchart LR
 | Ebene | Inhalt |
 |---|---|
 | L0 Datenpunkt | atomares Zitat oder gekennzeichnete Paraphrase mit ID und Fundstelle |
-| L1 Voice of the Customer | Cluster aus Datenpunkten, Titel als Insight in Ich-Form („Ich möchte …, damit …“) |
+| L1 Voice of the Customer | Cluster aus Datenpunkten (Richtwert 2–7), Titel als Insight in Ich-Form („Ich möchte …, damit …“) |
 | L2 Insight-Cluster *(optional)* | übergeordneter Insight in Ich-Form |
 | L3 Thema *(optional)* | thematische Headline |
 
 **Kernfunktionen**
 - **Jobs to be Done** nach Clayton Christensen als Referenzrahmen: Jeder Insight ist einer oder mehreren Dimensionen zugeordnet – funktional, sozial, emotional – inklusive Coverage-Check
-- **Schrittweiser Aufbau:** pro Transkript eine neue Version, Markierungen für neue, bestätigte, veränderte und widersprochene Insights
-- **Entwicklungsprotokoll:** beschreibt auf einer Metaebene, wie sich die Map verändert – stabile, volatile und spät entstandene Insights, Insight-Lebensläufe, Sättigung
+- **Sprecherprüfung:** vor jeder Verarbeitung eine kurze Tabelle zur Bestätigung, damit Interviewende nicht als Interviewte ausgewertet werden
+- **Emergenter Aufbau:** Start mit 1–2 Transkripten, danach pro Transkript eine neue Version; die Map darf sich jedes Mal neu ordnen. Faustregel 1 Interviewminute ≈ 1 Datenpunkt
+- **Entwicklungsprotokoll:** beschreibt auf einer Metaebene, wie sich das Verständnis verschiebt – unverändert, neu geschnitten, spät entstanden, Sättigung
 - **`re-cluster`:** dieselben Datenpunkte unter einer neuen Linse neu ordnen (z. B. Spannungen, Journey, Forces of Progress)
-- **Qualitätssicherung:** Zitatabgleich per Skript und Prüfung jedes Datenpunkts, jeder Verdichtung und aller Zählungen gegen das Original – damit nichts halluziniert wird
+- **Qualitätssicherung:** Zitat-, Sprecher- und Strukturprüfung per Skript, inhaltliche Prüfung neuer Datenpunkte und Verdichtungen gegen Transkript-Ausschnitte – damit nichts halluziniert wird
+- **Token-sparsam:** Mechanisches (Zählen, Tabellen, neue Version anlegen, Strukturprüfung) erledigt das Skript `amap.py`; neue Versionen werden kopiert und nur gezielt editiert
 
 **Befehle**
 
 | Befehl | Beispiel |
 |---|---|
-| Map starten | „/affinity-mapping – Projekt XY, Forschungsfrage: …, hier das erste Transkript“ |
+| Map starten | „/affinity-mapping – Projekt XY, Forschungsfrage: …, hier die ersten beiden Transkripte“ |
 | Transkript hinzufügen | „Nächstes Transkript einarbeiten“ |
 | re-cluster | „Bitte re-cluster, Linse: Spannungen & Widersprüche“ |
 | QS | „Bitte QS für v3 laufen lassen“ |
 
 → [Ausführliche README](./affinity-mapping/README.md)
+
+## affinity-miro
+
+**Board-Layout:** jeder Insight ein Frame (blauer Titel, gelbe Datenpunkte mit ID), Insight-Cluster als pinke und Themen als grüne Zettel, Parkplatz und Lücken als eigene Frames.
+
+**Rücksync:** Verschobene Zettel, umformulierte Titel und neue Frames werden übernommen; neue Zitat-Zettel werden im Transkript gesucht, eigene Notizen werden zu Team-Notizen; geänderte Zitate behalten ihren Originalwortlaut, gelöschte Zettel landen auf dem Parkplatz. Vor dem Schreiben bestätigst du die Änderungsliste.
+
+**Neue Versionen** erscheinen als weiterer Stand rechts neben dem alten.
+
+| Befehl | Beispiel |
+|---|---|
+| Auf Miro bringen | „/affinity-miro – bring v3 auf dieses Board: <URL>“ |
+| Miro einlesen | „Lies das Board wieder ein“ |
+
+→ [Ausführliche README](./affinity-miro/README.md)
 
 ## research-summary
 
@@ -111,6 +131,8 @@ flowchart LR
 | `affinity-map_<projekt>_v<n>.md` | affinity-mapping | eine Map-Version pro Schritt, Vorversionen bleiben unverändert |
 | `map-entwicklung_<projekt>.md` | affinity-mapping | fortlaufendes Entwicklungsprotokoll |
 | `transkript_<projekt>_T<nn>.txt` | affinity-mapping | gesichertes Transkript, falls es in den Chat eingefügt wurde |
+| `sprecher_<projekt>.json` | affinity-mapping | bestätigte Sprecherzuordnung (enthält ggf. Klarnamen – geschützt ablegen) |
+| `miro_<projekt>.json` | affinity-miro | Board-URL, exportierte Stände, Einlese-Verlauf |
 | `research-summary_<projekt>_v<n>.md` | research-summary | Summary auf Basis der Map-Version n |
 
 Alle Dateien im selben Obsidian-Vault ablegen: Dann führen Links von der Summary über den Insight bis zum einzelnen Zitat.
@@ -119,16 +141,24 @@ Alle Dateien im selben Obsidian-Vault ablegen: Dann führen Links von der Summar
 
 ## Installation
 
-Jeder Skill ist ein Ordner mit einer `SKILL.md` (die Anweisungen für das Modell) und einer `README.md` (die Dokumentation für Menschen).
+Jeder Skill ist ein Ordner mit einer `SKILL.md` (die Anweisungen für das Modell) und einer `README.md` (die Dokumentation für Menschen), teils mit Skripten und Referenzen.
 
 ```
 affinity-mapping/
 ├── SKILL.md
-└── README.md
+├── README.md
+├── references/   (templates.md, qs.md)
+└── scripts/      (amap.py)
+affinity-miro/
+├── SKILL.md
+├── README.md
+└── scripts/      (miro.py)
 research-summary/
 ├── SKILL.md
 └── README.md
 ```
+
+Die Ordner immer **vollständig** installieren – die Skills greifen auf ihre Skripte und Referenzen zu.
 
 - **Claude (Web/Desktop):** den jeweiligen Ordner als ZIP packen und in den Skill-Einstellungen hochladen.
 - **Claude Code:** die Ordner in das Skills-Verzeichnis kopieren, z. B. `~/.claude/skills/`.
@@ -148,7 +178,8 @@ Wie gut sie laufen, hängt von den Fähigkeiten der Umgebung ab:
 | Fähigkeit | Wofür | Ohne diese Fähigkeit |
 |---|---|---|
 | Dateien lesen und schreiben | Maps, Entwicklungsprotokoll und Summary als Dateien ablegen | Ausgabe als Markdown-Codeblock zum manuellen Speichern; Vorversionen müssen jeweils wieder bereitgestellt werden |
-| Code ausführen (Python) | automatischer Zitatabgleich in der QS | manueller Abgleich, im QS-Bericht vermerkt – weniger zuverlässig |
+| Code ausführen (Python) | Sprecherprüfung, Zitatabgleich, Zählungen, Tabellen, Miro-Layout und -Abgleich | manuelle Arbeit nach denselben Regeln, im QS-Bericht vermerkt – weniger zuverlässig und deutlich token-intensiver; `affinity-miro` braucht Python zwingend |
+| Miro-MCP | `affinity-miro` | Skill nicht nutzbar |
 | Subagenten | QS durch eine unabhängige Prüf-Instanz | Prüfung in einem eigenen Durchgang durch dasselbe Modell |
 | Großes Kontextfenster | lange Transkripte und umfangreiche Maps | Transkripte ggf. aufteilen |
 
@@ -172,6 +203,6 @@ Diese Skills stehen unter der [Creative Commons Namensnennung 4.0 International 
 
 Du darfst die Skills teilen, anpassen und weiterentwickeln, auch kommerziell, solange du die Urheberschaft nennst, einen Link zur Lizenz angibst und kenntlich machst, ob du Änderungen vorgenommen hast. Zum Beispiel so:
 
-> „affinity-mapping“ und „research-summary“ von Hias Wrba, lizenziert unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Angepasst von …
+> „affinity-mapping“, „affinity-miro“ und „research-summary“ von Hias Wrba, lizenziert unter [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). Angepasst von …
 
 **Autor:** Hias Wrba

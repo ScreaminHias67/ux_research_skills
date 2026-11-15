@@ -59,7 +59,7 @@ Ohne Angabe nutzt der Skill die neueste Map-Version. Die Standard-Zielgruppe ist
 ## Voraussetzungen
 
 - Eine Affinity Map im Format des Skills `affinity-mapping`.
-- Das **Entwicklungsprotokoll** `map-entwicklung_<projekt>.md` im selben Ordner. Es liefert Stabilität, Verlauf und Sättigung der Insights. Fehlt es, entsteht die Summary nur aus der Map, ohne den Abschnitt zur Entwicklung.
+- Das **Entwicklungsprotokoll** `map-entwicklung_<projekt>.md` im selben Ordner. Es liefert Erkenntnisverlauf und Sättigung. Fehlt es, entsteht die Summary nur aus der Map, ohne den Abschnitt zur Entwicklung.
 - **QS bestanden:** Im Frontmatter steht `qs: bestanden`. Fehlt das, schlägt der Skill vor, zuerst die QS laufen zu lassen. Auf Wunsch fährt er trotzdem fort und vermerkt das in der Summary.
 
 ---
@@ -75,7 +75,7 @@ Ohne Angabe nutzt der Skill die neueste Map-Version. Die Standard-Zielgruppe ist
    - ein bis zwei Originalzitaten mit Link in die Map
    - Begründung der Auswahl
 4. **Jobs to be Done im Überblick:** funktional, sozial, emotional
-5. **Wie sich das Bild entwickelt hat:** stabil, später sichtbar, relativiert, Sättigung (aus dem Entwicklungsprotokoll)
+5. **Wie sich das Bild entwickelt hat:** früh sichtbar, später sichtbar, neu geschnitten, Sättigung (aus dem Entwicklungsprotokoll)
 6. **Spannungen & Widersprüche**
 7. **Was gut funktioniert:** Stärken, auf denen aufgebaut werden kann
 8. **Handlungsfelder:** als „Wie könnten wir …?“-Fragen
@@ -94,12 +94,15 @@ Ohne Angabe nutzt der Skill die neueste Map-Version. Die Standard-Zielgruppe ist
 | Hebel | Führen andere Insights auf ihn zurück? |
 | Relevanz | Wie direkt beantwortet er die Forschungsfrage? |
 | Spannung | Zeigt er einen entscheidenden Zielkonflikt? |
-| Stabilität | Hat er sich über mehrere Interviews gehalten (laut Entwicklungsprotokoll)? |
 
-**Belastbarkeit:**
+Der Verlauf eines Insights (seit v1 unverändert oder später neu geschnitten) ist **kein** Gütekriterium: Die Map ordnet sich mit jedem Interview bottom-up neu.
+
+**Belastbarkeit** – allein nach der Evidenz in der finalen Map:
 - **stark:** mehrere Personen, keine Widersprüche
 - **mittel:** wenige Personen oder einzelne Widersprüche
-- **schwach / Hypothese:** Einzelstimme, dünne Datenbasis oder erst spät entstanden
+- **schwach / Hypothese:** Einzelstimme oder dünne Datenbasis
+
+Team-Notizen aus Miro sind keine Interviewevidenz und werden nicht zitiert.
 
 ---
 
