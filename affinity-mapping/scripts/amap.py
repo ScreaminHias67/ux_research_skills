@@ -329,7 +329,10 @@ def parse_map(md):
         if cur and section == "insight":
             insights[cur]["text"] += line + "\n"
             for j in re.findall(r"#job/(\w+)", line):
-                insights[cur]["jobs"].add(j.lower())
+                if j.lower() in JOBS:
+                    insights[cur]["jobs"].add(j.lower())
+                else:
+                    insights[cur]["tags"].add("#job/" + j.lower())
             insights[cur]["tags"].update(t for t in re.findall(r"#[\w/äöü-]+", line) if not t.startswith("#job/"))
 
     return fm, insights, dps, overview
@@ -573,7 +576,9 @@ def cmd_check(a):
     for iid, ins in insights.items():
         if not ins["dps"]:
             errors.append("C  %s hat keine Datenpunkte" % iid)
-        if not ins["jobs"]:
+        if "#job/offen" in ins["tags"]:
+            errors.append("C  %s: Job-Dimension noch offen (#job/offen) – festlegen" % iid)
+        elif not ins["jobs"]:
             warns.append("C  %s hat keine Job-Dimension" % iid)
         if len(ins["dps"]) >= 10:
             infos.append("   %s hat %d Datenpunkte – zeigen sich Unter-Insights?" % (iid, len(ins["dps"])))
