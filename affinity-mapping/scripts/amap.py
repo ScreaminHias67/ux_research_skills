@@ -31,7 +31,8 @@ from collections import Counter, OrderedDict
 
 CHARS_PER_MINUTE = {"de": 900, "en": 750}
 TOLERANCE = 0.30
-JOBS = ("funktional", "sozial", "emotional")
+ORCHID_SHARE = 0.15        # Obergrenze Anteil Orchids an L1-Clustern (Warnung)
+JOBS =("funktional", "sozial", "emotional")
 STEP_TAGS = ("#neu", "#bestaetigt", "#geaendert", "#widerspruch", "#robust", "#team")
 
 TS_RE = re.compile(r"\b(\d{1,2}):(\d{2})(?::(\d{2}))?(?:[.,]\d+)?\b")
@@ -281,7 +282,7 @@ def parse_map(md):
             cur, cur_level = mi.group(2), len(mi.group(1))
             title = mi.group(3).strip()
             insights[cur] = {"title": title, "line": ln, "jobs": set(), "tags": set(),
-                             "dps": [], "text": "", "persons": set()}
+                             "dps": [], "text": "", "persons": set(), "origins": set()}
             insights[cur]["tags"].update(re.findall(r"#[\w/äöü-]+", title))
             section = "insight"
             continue
@@ -292,6 +293,7 @@ def parse_map(md):
             if level <= 2:
                 low = htext.lower()
                 section = ("parkplatz" if low.startswith("parkplatz") else
+                           "einzelsignale" if low.startswith("einzelsignale") else
                            "qs" if low.startswith("qs-bericht") else
                            "overview" if low.startswith("überblick") else
                            "other")
@@ -318,13 +320,17 @@ def parse_map(md):
                   "transcript": mt.group(1).upper() if mt else None,
                   "kind": kind, "new": bool(re.search(r"·\s*neu\s*$", body)),
                   "insight": cur if section == "insight" and cur else None,
-                  "parkplatz": section == "parkplatz"}
+                  "parkplatz": section == "parkplatz",
+                  "einzelsignal": section == "einzelsignale"}
             dps.append(dp)
             if dp["insight"]:
                 insights[cur]["dps"].append(dpid)
                 if dp["person"]:
-                    # Team-Notizen sind gleichwertige Datenpunkte; "Team" zählt als eigene Quelle
+                    # Team-Notizen sind gleichwertige Datenpunkte und werden als Quelle geführt,
+                    # zählen aber nicht als Origin (Origin = Interviewperson)
                     insights[cur]["persons"].add("Team" if dp["person"] == "TEAM" else dp["person"])
+                    if dp["person"] != "TEAM":
+                        insights[cur]["origins"].add(dp["person"])
             continue
 
         if cur and section == "insight":
@@ -359,19 +365,42 @@ def status_of(ins):
     return "–"
 
 
+def is_orchid(ins):
+    return "#orchid" in ins["tags"]
+
+
+def map_origins(dps):
+    """Alle Interviewpersonen der Map (ohne Team)."""
+    return {d["person"] for d in dps if d["person"] and d["person"] != "TEAM"}
+
+
+def origin_status(ins, n_map_origins):
+    """Orchid, vorläufige Einzelstimme (Map mit nur einer Person) oder Monocluster-Verstoß."""
+    if len(ins["origins"]) > 1:
+        return None
+    if is_orchid(ins):
+        return "Orchid"
+    if not ins["origins"]:
+        return "nur Team"
+    if n_map_origins < 2:
+        return "Einzelstimme (vorläufig)"
+    return "Monocluster ohne Orchid"
+
+
 # --------------------------------------------------------------------------
 # Befehl: stats
 # --------------------------------------------------------------------------
 
-def overview_table(insights):
+def overview_table(insights, n_map_origins):
     rows = ["| ID | Insight | Jobs | Datenpunkte | Personen | Status |", "|---|---|---|---|---|---|"]
     for iid, ins in insights.items():
         title = re.sub(r"\s*#[\w/äöü-]+", "", ins["title"]).strip()
         jobs = ", ".join(j for j in JOBS if j in ins["jobs"]) or "–"
         persons = ", ".join(sorted(ins["persons"])) or "–"
         status = status_of(ins)
-        if len(ins["persons"]) == 1:
-            status = (status + ", Einzelstimme") if status != "–" else "Einzelstimme"
+        extra = origin_status(ins, n_map_origins)
+        if extra:
+            status = (status + ", " + extra) if status != "–" else extra
         rows.append("| %s | %s | %s | %d | %s | %s |" % (iid, title, jobs, len(ins["dps"]), persons, status))
     return "\n".join(rows)
 
@@ -379,7 +408,7 @@ def overview_table(insights):
 def cmd_stats(a):
     fm, insights, dps, _ = parse_map(read(a.map))
     c, combos = job_counts(insights)
-    print(overview_table(insights))
+    print(overview_table(insights, len(map_origins(dps))))
     print()
     print("**Job-Verteilung** (Mehrfachzuordnung möglich): " +
           " · ".join("%s %d" % (j, c[j]) for j in JOBS))
@@ -387,8 +416,10 @@ def cmd_stats(a):
         print("**Häufige Kombinationen:** " + " · ".join("%s %d" % kv for kv in combos.most_common()))
     zit = sum(1 for d in dps if d["kind"] == "zitat")
     par = sum(1 for d in dps if d["kind"] == "paraphrase")
-    print("\nDatenpunkte gesamt: %d (Zitate %d, Paraphrasen %d, sonstige %d) · Parkplatz: %d · Insights: %d" % (
-        len(dps), zit, par, len(dps) - zit - par, sum(d["parkplatz"] for d in dps), len(insights)))
+    print("\nDatenpunkte gesamt: %d (Zitate %d, Paraphrasen %d, sonstige %d) · Einzelsignale: %d · Parkplatz: %d · "
+          "Insights: %d (davon Orchids %d)" % (
+              len(dps), zit, par, len(dps) - zit - par, sum(d["einzelsignal"] for d in dps),
+              sum(d["parkplatz"] for d in dps), len(insights), sum(is_orchid(i) for i in insights.values())))
 
 
 # --------------------------------------------------------------------------
@@ -549,8 +580,8 @@ def cmd_check(a):
             errors.append("C  %s: Block-ID passt nicht zu Person %s" % (d["id"], d["person"]))
         if not d["person"]:
             warns.append("C  %s: keine Person nach „—“ erkennbar" % d["id"])
-        if not d["insight"] and not d["parkplatz"]:
-            errors.append("C  %s steht weder in einem Insight noch auf dem Parkplatz" % d["id"])
+        if not d["insight"] and not d["parkplatz"] and not d["einzelsignal"]:
+            errors.append("C  %s steht weder in einem Insight noch in Einzelsignalen oder auf dem Parkplatz" % d["id"])
         if d["kind"] == "unbekannt":
             warns.append("C  %s: weder Zitat noch als (Paraphrase)/(Beobachtung)/(Team-Notiz) gekennzeichnet" % d["id"])
     by_person = {}
@@ -570,6 +601,7 @@ def cmd_check(a):
             return int(fm.get(k, ""))
         except ValueError:
             return None
+    n_origins = len(map_origins(dps))
     if fm_int("datapoints") is not None and fm_int("datapoints") != len(dps):
         errors.append("C  Frontmatter datapoints=%s, tatsächlich %d" % (fm["datapoints"], len(dps)))
     if fm_int("voc_clusters") is not None and fm_int("voc_clusters") != len(insights):
@@ -583,12 +615,21 @@ def cmd_check(a):
             warns.append("C  %s hat keine Job-Dimension" % iid)
         if len(ins["dps"]) >= 10:
             infos.append("   %s hat %d Datenpunkte – zeigen sich Unter-Insights?" % (iid, len(ins["dps"])))
-        single = len(ins["persons"]) == 1
-        marked = "Einzelstimme" in ins["text"] or "Einzelstimme" in " ".join(overview.get(iid, []))
-        if single and not marked:
-            warns.append("C  %s nur von %s gestützt, aber nicht als Einzelstimme markiert" % (iid, next(iter(ins["persons"]))))
-        if not single and marked:
-            warns.append("C  %s als Einzelstimme markiert, aber von %s gestützt" % (iid, ", ".join(sorted(ins["persons"]))))
+        # Origin-Regel: Monocluster nur als Orchid
+        ost = origin_status(ins, n_origins)
+        if ost == "Monocluster ohne Orchid":
+            msg = "%s nur von %s gestützt (Monocluster) – breiter schneiden, in Einzelsignale verschieben " \
+                  "oder als Orchid begründen" % (iid, next(iter(ins["origins"])))
+            if "#team" in ins["tags"]:
+                warns.append("C  " + msg + " (vom Team gebildet: nicht zurücksetzen, im Bericht nennen)")
+            else:
+                errors.append("C  " + msg)
+        if is_orchid(ins):
+            if not re.search(r"^>\s*\[!example\]\s*Orchid", ins["text"], re.M):
+                errors.append("C  %s ist #orchid, aber ohne Callout „> [!example] Orchid“ mit Kriterien und Begründung" % iid)
+            if len(ins["origins"]) > 1:
+                warns.append("C  %s ist #orchid, wird aber von %s gestützt – Orchid-Status entfernen, #bestaetigt setzen, "
+                             "im Protokoll vermerken" % (iid, ", ".join(sorted(ins["origins"]))))
         row = overview.get(iid)
         if row is None:
             errors.append("C  %s fehlt in der Überblickstabelle" % iid)
@@ -605,6 +646,17 @@ def cmd_check(a):
     for iid in overview:
         if iid not in insights:
             errors.append("C  Überblick nennt %s, den es in der Map nicht gibt" % iid)
+    n_orchid = sum(is_orchid(i) for i in insights.values())
+    # mindestens ein Orchid ist immer zulässig, sonst ca. 15 % der L1-Cluster
+    if insights and n_orchid > max(1, int(len(insights) * ORCHID_SHARE + 0.5)):
+        warns.append("C  %d von %d Insights sind Orchids (%.0f %%, Obergrenze ca. %.0f %%) – gegeneinander abwägen, "
+                     "schwächere in Einzelsignale" % (n_orchid, len(insights), 100.0 * n_orchid / len(insights),
+                                                      100 * ORCHID_SHARE))
+    n_single = sum(d["einzelsignal"] for d in dps)
+    if n_single:
+        infos.append("   Einzelsignale: %d Datenpunkte – bei jedem neuen Transkript aktiv prüfen" % n_single)
+    if n_origins < 2:
+        infos.append("   Nur eine Person in der Map – Origin-Regel greift ab der zweiten Person")
     c, _ = job_counts(insights)
     mj = re.search(r"Job-Verteilung\*\*[^:]*:\s*(.*)", md)
     if mj:
@@ -711,8 +763,9 @@ def cmd_context(a):
 # --------------------------------------------------------------------------
 
 def cmd_trend(a):
-    print("| Version | Anlass | Neue DP | Neu | Bestätigt | Verändert | Widersprochen | Aufgelöst | Jobs (f · s · e) |")
-    print("|---|---|---|---|---|---|---|---|---|")
+    print("| Version | Anlass | Neue DP | Neu | Bestätigt | Verändert | Widersprochen | Aufgelöst | Orchids | "
+          "Einzelsignale | Jobs (f · s · e) |")
+    print("|---|---|---|---|---|---|---|---|---|---|---|")
     prev_ins = None
     prev_dp = set()
     for path in a.maps:
@@ -734,11 +787,12 @@ def cmd_trend(a):
         aufg = len(set(prev_ins) - set(ins)) if prev_ins is not None else 0
         c, _ = job_counts(ins)
         first = prev_ins is None
-        print("| [[%s\\|v%s]] | %s | %d | %s | %s | %s | %s | %s | %d · %d · %d |" % (
+        print("| [[%s\\|v%s]] | %s | %d | %s | %s | %s | %s | %s | %d | %d | %d · %d · %d |" % (
             name, v, anlass or "–", new_dp,
             len(ins) if first else cnt["neu"],
             "–" if first else cnt["best"], "–" if first else cnt["geae"],
             "–" if first else cnt["wid"], "–" if first else aufg,
+            sum(is_orchid(i) for i in ins.values()), sum(d["einzelsignal"] for d in dps),
             c["funktional"], c["sozial"], c["emotional"]))
         prev_ins, prev_dp = ins, cur_dp
 

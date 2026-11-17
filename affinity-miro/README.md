@@ -33,8 +33,8 @@ Bringt eine Affinity Map aus dem Skill [`affinity-mapping`](../affinity-mapping)
             │ [gelb]             │  │ [orange Team]      │
             └────────────────────┘  └────────────────────┘
 
-┌ Parkplatz ─────────────┐  ┌ Lücken & offene Fragen ┐
-└────────────────────────┘  └────────────────────────┘
+┌ Einzelsignale ─────────┐  ┌ Parkplatz ─────────────┐  ┌ Lücken & offene Fragen ┐
+└────────────────────────┘  └────────────────────────┘  └────────────────────────┘
 ```
 
 | Farbe | Bedeutung |
@@ -42,6 +42,7 @@ Bringt eine Affinity Map aus dem Skill [`affinity-mapping`](../affinity-mapping)
 | gelb | Datenpunkt (Zitat oder Paraphrase), letzte Zeile = ID wie `P03-007` |
 | orange | Team-Notiz |
 | blau | Insight (L1) – jeder Insight ist ein eigener Frame |
+| violett | Orchid – Insight, den nur eine Person liefert, der aber so wertvoll ist, dass er bewusst eigenständig bleibt |
 | pink | Insight-Cluster (L2) – gilt für die Reihe rechts daneben |
 | grün | Thema (L3) – gilt für den Block darunter |
 | grau | Lücke oder offene Frage |
@@ -54,6 +55,8 @@ Bringt eine Affinity Map aus dem Skill [`affinity-mapping`](../affinity-mapping)
 |---|---|
 | Zettel in einen anderen Frame ziehen | Datenpunkt wandert in diesen Insight |
 | Blauen Titel umformulieren | Insight bekommt den neuen Titel, der alte bleibt dokumentiert |
+| Titel-Sticky violett färben bzw. zurück auf blau | Insight wird zum Orchid bzw. verliert den Status (Begründung ergänzt der Skill als Vorschlag) |
+| Zettel in den Frame „Einzelsignale“ ziehen | Aussage wartet dort auf Bestätigung durch weitere Interviews |
 | Neuen Frame mit blauem Titel anlegen | neuer Insight, vom Skill mit Job-Dimensionen ergänzt (als Vorschlag) |
 | Frame leeren oder löschen | Insight wird aufgelöst |
 | Neuen Zettel mit Zitat schreiben | wird im Transkript gesucht und – wenn gefunden – zum regulären Datenpunkt |

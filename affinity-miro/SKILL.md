@@ -21,9 +21,10 @@ Voraussetzungen: Miro-MCP verbunden, Python 3, `scripts/miro.py` (nur Standardbi
 | L0 Datenpunkt | Sticky: Text + letzte Zeile ID (`P03-007`) | gelb |
 | Team-Notiz | Sticky mit ID `TEAM-001` | orange |
 | L1 Insight | **Frame** mit Titel `I09`, darin blaues Titel-Sticky und die Datenpunkte | blau |
+| L1 Orchid | wie L1, aber Titel-Sticky violett (`#orchid`) | violett |
 | L2 Insight-Cluster | Sticky links vor einer Reihe von L1-Frames | pink |
 | L3 Thema | Sticky über einem Block von L2-Reihen | grün |
-| Parkplatz / Lücken | eigene Frames; Lücken als Stickies | gelb / grau |
+| Einzelsignale / Parkplatz / Lücken | eigene Frames; Lücken als Stickies | gelb / grau |
 
 Eine Legende oben links nennt die Map-Version und die Regeln fürs Team: IDs nicht löschen oder ändern; verschieben, umformulieren, neue Frames und neue Zettel ohne ID sind willkommen.
 
@@ -77,11 +78,14 @@ Aufs Board kommt nur die **pseudonymisierte Map** – nie Transkripte, die Sprec
 |---|---|
 | Sticky in anderen Frame verschoben | Datenpunkt wandert in den Insight; Insight `#team` + Callout „Geändert in“ mit Herkunft |
 | Blauer Titel umformuliert | neuer Titel, `#team #geaendert`, alter Titel im Callout |
+| Titel-Sticky violett gefärbt | `#orchid #team`, Orchid-Callout mit Hinweis „Kriterien und Begründung noch ergänzen“ |
+| Titel-Sticky von violett auf eine andere Farbe | `#orchid` und Orchid-Callout entfernt, `#team` |
 | Neuer Frame | neuer Insight mit neuer ID, `#team #neu #job/offen`; Titel aus dem blauen Sticky, Frame-Titel des Teams im Callout; L2/L3 nach Board-Lage |
 | Frame leer oder gelöscht | Insight aufgelöst; alter Titel, Jobs und Verbleib der Datenpunkte in den methodischen Notizen |
 | Neues Sticky, Text steht im Transkript | Datenpunkt mit neuer ID und Fundstelle mit Zeitstempel (Person aus dem Transkript) |
 | Neues Sticky, eigener Text | `(Team-Notiz)` mit ID `team-00x` – gleichwertiger Datenpunkt, Quelle `Team` |
 | Text eines Datenpunkt-Stickies geändert | Originalwortlaut bleibt; Hinweis in den methodischen Notizen |
+| Sticky in den Frame „Einzelsignale“ verschoben | Datenpunkt wandert in den Abschnitt Einzelsignale |
 | Sticky gelöscht oder nicht gefunden | Datenpunkt auf den Parkplatz; Hinweis in den methodischen Notizen |
 | Neues Sticky im Lücken-Frame | neue Zeile unter „Lücken & offene Fragen“ |
 | pinkes/grünes Sticky umformuliert oder verschoben | L2/L3 neu gebildet nach Board-Lage |

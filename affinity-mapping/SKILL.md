@@ -46,15 +46,33 @@ Ohne Codeausführung: alles manuell nach denselben Regeln, im QS-Bericht vermerk
 - **IDs:** `P01-007`, über alle Versionen stabil. Personen pseudonymisiert in Einarbeitungsreihenfolge. Klarnamen, Firmen- und Ortsangaben entfernen oder generalisieren.
 
 ### L1 – Voice of the Customer
-- **Größe:** Richtwert etwa 2–7 Datenpunkte – eine Orientierung, keine Grenze. Größere Cluster sind in Ordnung, wenn sie sich inhaltlich nicht sinnvoll teilen lassen; ab etwa 10 prüfen, ob sich Unter-Insights zeigen. Ein einzelner, starker Datenpunkt darf ein eigener Cluster sein.
-- Nur von einer Person gestützt → `Einzelstimme` (früh normal).
-- Jeder Datenpunkt gehört zu **genau einem** Cluster. Was nicht passt, kommt auf den **Parkplatz** – nie erzwingen.
+- **Größe:** Richtwert etwa 2–7 Datenpunkte – eine Orientierung, keine Grenze. Größere Cluster sind in Ordnung, wenn sie sich inhaltlich nicht sinnvoll teilen lassen; ab etwa 10 prüfen, ob sich Unter-Insights zeigen.
+- **Mehrere Origins als Regel:** Ein L1-Cluster wird grundsätzlich von **mindestens zwei Personen** gestützt. Origin ist nur eine Interviewperson (P01, P02 …); Team-Notizen stützen einen Cluster, zählen aber nicht als eigener Origin. Beim Clustern wägen wir **Stärke des Signals** (Zahl der Origins und Datenpunkte) gegen **Tiefe des Insights** ab: Lieber ein etwas breiter geschnittener Insight, den mehrere Personen tragen, als viele schmale, die je an einer Person hängen.
+- **Monocluster = Orchid oder gar nicht:** Ein L1-Cluster mit nur einem Origin ist nur zulässig, wenn der Insight außergewöhnlich wertvoll ist (Kriterien in Abschnitt 1a). Dann ist er immer als Orchid gekennzeichnet. Alle anderen Datenpunkte einer einzelnen Person:
+  1. erst prüfen, ob sie in einen Cluster mit mehreren Origins passen, notfalls mit etwas abstrakterem Titel, solange der Titel durch alle Datenpunkte gedeckt bleibt;
+  2. sonst in den Abschnitt **Einzelsignale**. Dort warten sie auf Bestätigung und werden bei jedem neuen Transkript aktiv geprüft.
+- Jeder Datenpunkt gehört zu **genau einem** Ort: Cluster, Einzelsignale oder Parkplatz. Der **Parkplatz** ist für das, was inhaltlich nirgends passt (auch nicht thematisch zu anderen Aussagen); **Einzelsignale** für das, was inhaltlich Gewicht hat, aber bisher nur von einer Person kommt. Nie erzwingen.
+- **Frühphase:** v1 möglichst aus zwei Transkripten. Liegt nur eines vor, vorher nachfragen. Bleibt es bei einem, gilt die Origin-Regel ab v2; in v1 werden nur echte Orchid-Kandidat:innen als Orchid markiert, die übrigen Cluster bekommen den Status `Einzelstimme (vorläufig)` und werden in v2 vorrangig neu bewertet.
 - Titel ist ein **Insight aus Nutzendenperspektive**, kein Thema, keine Lösung: „Ich möchte …, damit …“, „Immer wenn ich …, dann …“, „Ich fühle mich …, wenn …“, „Mir ist wichtig, dass andere …“, „Ich vermeide …, weil …“. Schlecht: „Navigation“, „Probleme mit dem Export“, „Ich möchte einen Button für …“.
 - **Insight-ID** (`I01` …): Ein Insight behält seine ID, solange sein **Kern** gleich bleibt (Kernaussage und Großteil der Datenpunkte). Wird er neu geschnitten, bekommt er eine neue ID mit Herkunft über die Datenpunkte („vereint I04 (3 DP) + I07 (2 DP)“). IDs werden nie wiederverwendet.
 - Jeder Insight bekommt eine oder mehrere Job-Dimensionen.
 
+### 1a – Orchids
+Ein Orchid ist ein Insight, den nur eine Person liefert, der aber so wertvoll ist, dass er trotz schwachem Signal eigenständig sichtbar bleibt. Mindestens eines dieser Kriterien muss erfüllt sein:
+- **(a) Überraschung:** widerspricht gängigen Annahmen oder anderen Insights der Map;
+- **(b) Tragweite:** hohe Bedeutung für die Forschungsfrage;
+- **(c) Neuer Mechanismus:** deckt einen Job, eine Ursache oder einen Wirkzusammenhang auf, den sonst niemand benennt;
+- **(d) Intensität:** besonders starke emotionale Ladung oder ein auffälliger Workaround.
+
+Regeln:
+- Markierung: `#orchid` in der Tag-Zeile und ein dauerhafter Callout `> [!example] Orchid` mit den erfüllten Kriterien (Buchstaben) und einer Begründung in ein bis zwei Sätzen, die sich auf die Datenpunkte stützt.
+- **Obergrenze:** höchstens etwa 15 % der L1-Cluster sind Orchids. Darüber warnt das Skript; dann die Orchids gegeneinander abwägen und die schwächeren in Einzelsignale verschieben.
+- Spannend heißt nicht laut: Häufigkeit oder Lautstärke einer einzelnen Person machen noch keinen Orchid.
+- **Bestätigung:** Stützt in einem späteren Transkript eine weitere Person den Insight, entfällt der Orchid-Status (`#orchid` und Callout entfernen, `#bestaetigt` setzen). Im Entwicklungsprotokoll steht „Orchid seit v<x>, bestätigt in v<y>“.
+- Orchids gibt es nur auf L1. L2- und L3-Cluster werden immer von mehreren Personen getragen.
+
 ### L2 / L3 (optional)
-- L2 nur bei echtem übergeordnetem Sinnzusammenhang (Orientierung: ab etwa 8 L1-Clustern, keine feste Schwelle). Job-Dimensionen = Vereinigungsmenge der L1.
+- L2 nur bei echtem übergeordnetem Sinnzusammenhang (Orientierung: ab etwa 8 L1-Clustern, keine feste Schwelle). Job-Dimensionen = Vereinigungsmenge der L1. Ein L2, das nur von einer Person getragen wird, wird nicht gebildet.
 - L3 nur bei großen Datensätzen, zur Orientierung.
 
 ## 2. Jobs to be Done
@@ -78,11 +96,11 @@ Regeln: Ein Insight bekommt **alle** Dimensionen, die seine Datenpunkte belegen 
 Bei mehreren Transkripten auf einmal: alle Sprecherprüfungen gesammelt in einer Rückfrage.
 
 ### Map starten (v1)
-1. 1 oder 2 Transkripte. Bei zwei werden sie **gemeinsam** geclustert (P01, P02 in genannter Reihenfolge, sonst nach Dateiname). Werden mehr als zwei geliefert: v1 aus den ersten beiden, die übrigen danach einzeln einarbeiten; Reihenfolge vorher nennen.
+1. Bevorzugt 2 Transkripte, damit die Origin-Regel von Beginn an greift; bei nur einem kurz nachfragen, ob ein zweites folgt (Frühphase, Abschnitt 1). Bei zwei werden sie **gemeinsam** geclustert (P01, P02 in genannter Reihenfolge, sonst nach Dateiname). Werden mehr als zwei geliefert: v1 aus den ersten beiden, die übrigen danach einzeln einarbeiten; Reihenfolge vorher nennen.
 2. Kontext und Forschungsfrage festhalten; fehlt sie, kurz nachfragen oder ableiten und als Annahme kennzeichnen.
 3. `references/templates.md` lesen.
 4. Datenpunkte extrahieren (L0), Smalltalk und Moderation weglassen.
-5. Bottom-up clustern (L1) – nach Bedeutung, nicht nach Leitfaden-Fragen. Titel, Job-Dimensionen, ggf. L2/L3.
+5. Bottom-up clustern (L1) – nach Bedeutung, nicht nach Leitfaden-Fragen. Cluster mit mehreren Origins bevorzugen, Monocluster nur als Orchid, Rest in Einzelsignale (Abschnitt 1, 1a). Titel, Job-Dimensionen, ggf. L2/L3.
 6. Map `affinity-map_<projekt>_v1.md` schreiben; Überblick und Job-Verteilung mit `amap.py stats` erzeugen.
 7. Checkliste (Abschnitt 6), dann QS (Abschnitt 5).
 8. Entwicklungsprotokoll mit Basiseintrag anlegen. Keine Neu-Markierungen in v1.
@@ -96,6 +114,7 @@ Bei mehreren Transkripten auf einmal: alle Sprecherprüfungen gesammelt in einer
 3. **Neue Version anlegen:** `amap.py new-version affinity-map_<p>_v<n>.md affinity-map_<p>_v<n+1>.md --step add`. Das kopiert die Vorversion, entfernt die Markierungen des letzten Schritts und den alten QS-Bericht. Die Vorversion bleibt unverändert. Ab hier **nur gezielt editieren**, nie die ganze Map neu schreiben.
 4. **Datenpunkte extrahieren** für die neue Person.
 5. **Offen neu ordnen:** Neue und bestehende Datenpunkte gleichberechtigt betrachten. Für jeden bestehenden Cluster fragen: Trägt dieser Zuschnitt im Licht der neuen Daten noch, oder zeigt sich ein anderer Sinnzusammenhang? Cluster auflösen, aufspalten, zusammenführen, Datenpunkte umhängen, Titel neu formulieren, Parkplatz neu bewerten, L2/L3 neu bilden – wo die Daten es tragen.
+   **Pflichtdurchgang Einzelsignale und Orchids:** Jedes Einzelsignal und jeden Orchid gegen die neuen Datenpunkte prüfen. Stützt die neue Person sie, entsteht ein Cluster mit mehreren Origins (Einzelsignal → neuer Insight `#neu`; Orchid → `#bestaetigt`, Orchid-Status entfällt). Beim Aufspalten darauf achten, dass keine neuen Monocluster entstehen.
 6. **Widersprüche nicht glätten:** `> [!warning] Widerspruch` im Cluster oder als eigener Cluster.
 7. **Markieren** (Tabelle in `templates.md`), `amap.py stats` für Überblick und Job-Verteilung, Frontmatter aktualisieren.
 8. **Entwicklungsprotokoll** fortschreiben: neuer Schritt-Eintrag (nur anhängen), Gesamtbild neu, Verlaufstabelle mit `amap.py trend`.
@@ -106,7 +125,7 @@ Bei mehreren Transkripten auf einmal: alle Sprecherprüfungen gesammelt in einer
 Eine fortlaufende Datei pro Projekt; Input für `research-summary`. Sie beschreibt **wie sich das Verständnis verschiebt**, nicht die Inhalte. Veränderung ist kein Qualitätsmangel, Unverändertes kein Qualitätsmerkmal – beides wird neutral beschrieben.
 
 1. **Gesamtbild** (bei jedem Schritt neu): Verlaufstabelle; „Wie sich das Bild verschoben hat“ (3–6 Sätze); Unverändert seit; Neu geschnitten; Spät entstanden; Sättigung (Zahl neuer Insights pro Transkript, vorsichtig formuliert); Verschiebung der Job-Dimensionen.
-2. **Schritt-Protokoll** (chronologisch, nur anhängen): Version, Datum, Anlass, Links; neu; bestätigt; neu geschnitten mit Herkunft über Datenpunkte; Widersprüche; aufgelöst und Parkplatz-Bewegungen; Job-Verschiebung; Einschätzung in einem Satz; QS-Ergebnis.
+2. **Schritt-Protokoll** (chronologisch, nur anhängen): Version, Datum, Anlass, Links; neu; bestätigt; neu geschnitten mit Herkunft über Datenpunkte; Widersprüche; aufgelöst, Parkplatz- und Einzelsignal-Bewegungen; Orchids (neu, bestätigt, zurückgestuft); Job-Verschiebung; Einschätzung in einem Satz; QS-Ergebnis.
 
 Jede Aussage muss durch den Vergleich der Map-Versionen belegbar sein; Deutungen als Deutung formulieren. In der Map steht nur ein Verweis-Callout auf den Protokolleintrag.
 
@@ -120,7 +139,7 @@ Ziel: neue Version mit **anderen Clustern und neuen Sinnzusammenhängen**, ohne 
    - **Job-Dimension zuerst:** funktional / sozial / emotional + „Dimensionsübergreifend“; mehrfach zugeordnete Insights stehen vollständig an genau einer Stelle, sonst nur als Link
    - **Spannungen & Widersprüche** · **Situation / Auslöser** („Immer wenn …“) · **Journey / Phasen** · **Hürden vs. Antreiber** (Forces of Progress) · **Segmente / Rollen**
    Ohne Vorgabe eine deutlich andere Linse wählen und kurz begründen.
-3. Mindestens die Hälfte der L1-Cluster neu zusammensetzen; identisch wiederkehrende als `#robust`.
+3. Mindestens die Hälfte der L1-Cluster neu zusammensetzen; identisch wiederkehrende als `#robust`. Die Origin-Regel gilt auch hier: Einzelsignale dürfen unter der neuen Linse in Cluster mit mehreren Origins wandern, Orchids neu bewertet werden.
 4. Neue Insight-IDs und Titel nach denselben Regeln, Job-Dimensionen neu bestimmen.
 5. Protokoll-Eintrag „re-cluster: <Linse>“ mit Zuordnung alter zu neuen IDs über die Datenpunkte.
 6. QS mit Schwerpunkt Ebene B; das Skript prüft, dass kein Datenpunkt verändert wurde, verloren ging oder doppelt ist.
@@ -137,6 +156,7 @@ Kurzfassung:
 ## 6. Checkliste vor der QS
 - Sprecherzuordnung bestätigt?
 - Jeder L1-Titel in Ich-Form, Insight statt Thema, ohne Lösung, durch seine Datenpunkte gedeckt?
+- Jeder L1-Cluster mit mindestens zwei Origins – oder als Orchid mit Kriterien und Begründung? Orchids unter etwa 15 %? Einzelsignale und Orchids gegen die neuen Daten geprüft?
 - Jede Job-Dimension durch Datenpunkte gestützt, Coverage-Check gemacht?
 - Zitierkonventionen eingehalten?
 - (Folgeschritte) Bestehende Cluster wirklich offen neu bewertet – nicht nur ergänzt? Neue IDs nur bei neuem Kern, Herkunft über Datenpunkte vermerkt?
@@ -147,7 +167,7 @@ Kurzfassung:
 
 - Belegen statt behaupten: jeder Insight und jede Job-Zuordnung aus den Datenpunkten nachvollziehbar.
 - Lieber weniger und belegt als mehr und ausgeschmückt.
-- Häufigkeit ist nicht Relevanz.
+- Häufigkeit ist nicht Relevanz – aber ein Insight braucht in der Regel mehr als eine Stimme. Ausnahmen sind Orchids, und die sind selten und begründet.
 - Emergenz statt Bestandsschutz: Die Map darf sich mit jedem Interview neu ordnen; frühe Insights sind Hypothesen.
 - Widersprüche sichtbar lassen, nicht glätten.
 - Die Map ist ein Arbeitsstand für das Team, keine Wahrheit – Unsicherheiten offen markieren.

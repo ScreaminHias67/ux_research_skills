@@ -43,7 +43,7 @@ tags: [ux-research, affinity-map, jtbd]
 | ID | Insight | Jobs | Datenpunkte | Personen | Status |
 |---|---|---|---|---|---|
 | I01 | Ich möchte … | funktional, emotional | 5 | P01, P03 | bestätigt |
-| I09 | Immer wenn ich … | sozial | 3 | P03 | neu, Einzelstimme |
+| I09 | Immer wenn ich … | sozial | 3 | P03 | neu, Orchid |
 
 **Job-Verteilung** (Mehrfachzuordnung möglich): funktional 7 · sozial 4 · emotional 6
 **Häufige Kombinationen:** funktional+emotional 3 · funktional+sozial 2
@@ -58,9 +58,12 @@ tags: [ux-research, affinity-map, jtbd]
 ### „<L2-Insight in Ich-Form>“
 
 #### I09 „<L1-Insight in Ich-Form>“
-#job/sozial #neu
+#job/sozial #orchid #neu
 > [!tip] Neu in v3
 > Entstanden durch P03.
+
+> [!example] Orchid
+> Kriterien: (a) Überraschung, (c) neuer Mechanismus. Nur P03, aber widerspricht I03 und benennt als Einzige:r, dass … (p03-007, p03-012).
 
 > [!quote] Voice of the Customer
 > Ein bis zwei Sätze, was dieser Insight bedeutet – bei Mehrfachzuordnung: wie die Dimensionen zusammenhängen.
@@ -76,6 +79,10 @@ tags: [ux-research, affinity-map, jtbd]
 - …
 
 ---
+
+## Einzelsignale
+*Aussagen mit inhaltlichem Gewicht, die bisher nur eine Person macht. Bei jedem neuen Transkript aktiv prüfen.*
+- „…“ — P03 · T03, 00:21:05 · neu ^p03-011
 
 ## Parkplatz
 - „…“ — P02 · T02, 00:44:10 ^p02-030
@@ -106,11 +113,14 @@ tags: [ux-research, affinity-map, jtbd]
 | Bestätigt | `#bestaetigt` | Insight ist im Kern gleich und wird jetzt von einer weiteren Person gestützt |
 | Neu geschnitten | `#geaendert` + `> [!abstract] Geändert in v<n>` mit Herkunft und altem Titel | Titel, Zuschnitt oder Job-Dimensionen geändert, aufgespalten oder zusammengeführt |
 | Widersprochen | `#widerspruch` + `> [!warning] Widerspruch` | Neue Daten widersprechen dem Insight (Callout bleibt dauerhaft) |
+| Orchid | `#orchid` + `> [!example] Orchid` mit Kriterien und Begründung | Monocluster, der wegen seines Werts bleibt (dauerhaft, bis eine weitere Person ihn stützt) |
 | Robust | `#robust` | (re-cluster) Cluster kehrt unter neuer Linse identisch wieder |
 | Team | `#team` | (Miro) Änderung durch das Team auf dem Board |
 | Neuer Datenpunkt | `· neu` vor der Block-ID | Datenpunkt aus dem aktuellen Transkript |
 
-`amap.py new-version` entfernt alle diese Markierungen außer dem Widerspruch-Callout.
+`amap.py new-version` entfernt alle diese Markierungen außer dem Widerspruch-Callout und der Orchid-Markierung. Den Orchid-Status entfernt das Modell selbst, sobald eine weitere Person den Insight stützt.
+
+Status in der Überblickstabelle (`amap.py stats`): `Orchid` für markierte Monocluster; `Einzelstimme (vorläufig)` nur in v1 aus einem Transkript; `Monocluster ohne Orchid` ist ein QS-Fehler.
 
 ## Entwicklungsprotokoll
 
@@ -136,10 +146,10 @@ tags: [ux-research, affinity-map, map-entwicklung]
 
 ### Verlauf
 <!-- mit `amap.py trend` erzeugen -->
-| Version | Anlass | Neue DP | Neu | Bestätigt | Verändert | Widersprochen | Aufgelöst | Jobs (f · s · e) |
-|---|---|---|---|---|---|---|---|---|
-| [[affinity-map_<projekt>_v1\|v1]] | T01 + T02 | 41 | 8 | – | – | – | – | 6 · 3 · 4 |
-| [[affinity-map_<projekt>_v2\|v2]] | T03 (P03) | 17 | 2 | 4 | 3 | 1 | 1 | 8 · 4 · 6 |
+| Version | Anlass | Neue DP | Neu | Bestätigt | Verändert | Widersprochen | Aufgelöst | Orchids | Einzelsignale | Jobs (f · s · e) |
+|---|---|---|---|---|---|---|---|---|---|---|
+| [[affinity-map_<projekt>_v1\|v1]] | T01 + T02 | 41 | 8 | – | – | – | – | 1 | 5 | 6 · 3 · 4 |
+| [[affinity-map_<projekt>_v2\|v2]] | T03 (P03) | 17 | 2 | 4 | 3 | 1 | 1 | 1 | 7 | 8 · 4 · 6 |
 
 ### Wie sich das Bild verschoben hat
 Drei bis sechs Sätze: Welche Lesart hat sich durch neue Daten verändert, welche Zusammenhänge sind neu sichtbar geworden, welche Themen tauchten erst spät auf, wo hält sich eine Lesart über mehrere Interviews.
@@ -151,7 +161,12 @@ Drei bis sechs Sätze: Welche Lesart hat sich durch neue Daten verändert, welch
 - I12 – in v2 aus I04 und I07 entstanden
 
 ### Spät entstanden
-- I09 – erst in v2, Einzelstimme
+- I09 – erst in v2, Orchid
+
+### Orchids und Einzelsignale
+- I09 – Orchid seit v2 (nur P03)
+- I05 – Orchid seit v1, bestätigt in v2 durch P03
+- Einzelsignale: 5 → 7; 2 davon in v2 zu I10 zusammengewachsen
 
 ### Sättigung
 Neue Insights pro Transkript: 8 (v1, zwei Transkripte) → 2 → … Vorsichtige Einschätzung …
@@ -174,7 +189,8 @@ Neue Insights pro Transkript: 8 (v1, zwei Transkripte) → 2 → … Vorsichtige
 - **Bestätigt:** I01, I03
 - **Neu geschnitten:** I12 vereint I04 (3 DP) + I07 (2 DP) – „alt“ → „neu“; I05 um emotionale Dimension ergänzt
 - **Widerspruch:** P03 widerspricht I03
-- **Aufgelöst / Parkplatz:** I06 aufgelöst, Datenpunkte in I09 und I12; p01-018 vom Parkplatz in I09
+- **Aufgelöst / Parkplatz / Einzelsignale:** I06 aufgelöst, Datenpunkte in I09 und I12; p01-018 vom Parkplatz in I09; p01-004 + p02-009 aus Einzelsignalen zu I10
+- **Orchids:** I09 neu als Orchid (Kriterien a, c); I05 durch P03 bestätigt, Orchid-Status entfällt
 - **Job-Verteilung:** soziale Dimension erstmals deutlich belegt
 - **Einschätzung:** …
 - **QS:** bestanden
