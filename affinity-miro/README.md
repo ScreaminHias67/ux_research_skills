@@ -33,8 +33,8 @@ Bringt eine Affinity Map aus dem Skill [`affinity-mapping`](../affinity-mapping)
             │ [gelb]             │  │ [orange Team]      │
             └────────────────────┘  └────────────────────┘
 
-┌ Parkplatz ─────────────┐  ┌ Lücken & offene Fragen ┐
-└────────────────────────┘  └────────────────────────┘
+┌ Einzelsignale ─────────┐  ┌ Parkplatz ─────────────┐  ┌ Lücken & offene Fragen ┐
+└────────────────────────┘  └────────────────────────┘  └────────────────────────┘
 ```
 
 | Farbe | Bedeutung |
@@ -42,6 +42,7 @@ Bringt eine Affinity Map aus dem Skill [`affinity-mapping`](../affinity-mapping)
 | gelb | Datenpunkt (Zitat oder Paraphrase), letzte Zeile = ID wie `P03-007` |
 | orange | Team-Notiz |
 | blau | Insight (L1) – jeder Insight ist ein eigener Frame |
+| violett | Orchid – Insight, den nur eine Person liefert, der aber so wertvoll ist, dass er bewusst eigenständig bleibt |
 | pink | Insight-Cluster (L2) – gilt für die Reihe rechts daneben |
 | grün | Thema (L3) – gilt für den Block darunter |
 | grau | Lücke oder offene Frage |
@@ -54,16 +55,18 @@ Bringt eine Affinity Map aus dem Skill [`affinity-mapping`](../affinity-mapping)
 |---|---|
 | Zettel in einen anderen Frame ziehen | Datenpunkt wandert in diesen Insight |
 | Blauen Titel umformulieren | Insight bekommt den neuen Titel, der alte bleibt dokumentiert |
+| Titel-Sticky violett färben bzw. zurück auf blau | Insight wird zum Orchid bzw. verliert den Status (Begründung ergänzt der Skill als Vorschlag) |
+| Zettel in den Frame „Einzelsignale“ ziehen | Aussage wartet dort auf Bestätigung durch weitere Interviews |
 | Neuen Frame mit blauem Titel anlegen | neuer Insight, vom Skill mit Job-Dimensionen ergänzt (als Vorschlag) |
 | Frame leeren oder löschen | Insight wird aufgelöst |
 | Neuen Zettel mit Zitat schreiben | wird im Transkript gesucht und – wenn gefunden – zum regulären Datenpunkt |
-| Neuen Zettel mit eigener Notiz | wird zur **Team-Notiz**, getrennt von den Interviewdaten |
+| Neuen Zettel mit eigener Notiz | wird zur **Team-Notiz** – ein gleichwertiger Datenpunkt mit Quelle „Team“ |
 | Zettel in „Lücken“ ergänzen | neue offene Frage in der Map |
 | Pinke/grüne Zettel verschieben oder umformulieren | Insight-Cluster und Themen werden neu gebildet |
 
 **Bitte nicht:** IDs (`P03-007`, `I09`) löschen oder ändern und den Text von Zitat-Zetteln umschreiben. Geänderte Zitate werden nicht übernommen – der Originalwortlaut bleibt, damit jede Aussage auf das Interview zurückführbar ist. Gelöschte Zettel gehen nicht verloren, sie landen auf dem Parkplatz.
 
-Die Deutungshoheit liegt beim Team: Titel, die das Team formuliert, setzt die Qualitätssicherung nicht zurück, sie weist höchstens darauf hin, wenn ein Titel von den Datenpunkten nicht gedeckt ist.
+Die Deutungshoheit liegt beim Team: Titel, Zuordnungen und neue Insights des Teams setzt die Qualitätssicherung nicht zurück und bewertet sie nicht inhaltlich – sie prüft nur, ob IDs, Zitate und Zählungen stimmen.
 
 ---
 
@@ -71,7 +74,7 @@ Die Deutungshoheit liegt beim Team: Titel, die das Team formuliert, setzt die Qu
 
 1. Der Skill liest den Bereich des letzten Exports vom Board.
 2. Ein Skript vergleicht das Board mit der Map und erstellt eine **Änderungsliste**.
-3. Du bestätigst die Liste und klärst Rückfragen, etwa unklare Zuordnungen.
+3. Du bestätigst die Liste als Ganzes. Was das Team auf dem Board gebaut hat, gilt – auch die Zuordnung zu Clustern und Themen nach Lage. Rückfragen gibt es nur bei technischen Unklarheiten, etwa einem Zitat, das in mehreren Transkripten vorkommt.
 4. Erst dann entsteht eine neue Map-Version mit Eintrag im Entwicklungsprotokoll und Qualitätssicherung.
 
 Wird inzwischen ein neues Transkript eingearbeitet, fragt `affinity-mapping` vorher, ob das Board zuerst eingelesen werden soll – sonst laufen zwei Stände auseinander.

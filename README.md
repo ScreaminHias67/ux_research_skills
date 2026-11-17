@@ -61,7 +61,7 @@ flowchart LR
 | Ebene | Inhalt |
 |---|---|
 | L0 Datenpunkt | atomares Zitat oder gekennzeichnete Paraphrase mit ID und Fundstelle |
-| L1 Voice of the Customer | Cluster aus Datenpunkten (Richtwert 2–7), Titel als Insight in Ich-Form („Ich möchte …, damit …“) |
+| L1 Voice of the Customer | Cluster aus Datenpunkten (Richtwert 2–7) von mindestens zwei Personen, Titel als Insight in Ich-Form („Ich möchte …, damit …“); Ausnahme: begründete **Orchids** |
 | L2 Insight-Cluster *(optional)* | übergeordneter Insight in Ich-Form |
 | L3 Thema *(optional)* | thematische Headline |
 
@@ -69,6 +69,7 @@ flowchart LR
 - **Jobs to be Done** nach Clayton Christensen als Referenzrahmen: Jeder Insight ist einer oder mehreren Dimensionen zugeordnet – funktional, sozial, emotional – inklusive Coverage-Check
 - **Sprecherprüfung:** vor jeder Verarbeitung eine kurze Tabelle zur Bestätigung, damit Interviewende nicht als Interviewte ausgewertet werden
 - **Emergenter Aufbau:** Start mit 1–2 Transkripten, danach pro Transkript eine neue Version; die Map darf sich jedes Mal neu ordnen. Faustregel 1 Interviewminute ≈ 1 Datenpunkt
+- **Starke Signale statt Monocluster:** Insights werden von mindestens zwei Personen getragen. Nur außergewöhnlich wertvolle Einzelbefunde bleiben als **Orchid** eigenständig (begründet, höchstens ca. 15 %); alles andere aus nur einer Stimme wartet unter **Einzelsignale** auf Bestätigung
 - **Entwicklungsprotokoll:** beschreibt auf einer Metaebene, wie sich das Verständnis verschiebt – unverändert, neu geschnitten, spät entstanden, Sättigung
 - **`re-cluster`:** dieselben Datenpunkte unter einer neuen Linse neu ordnen (z. B. Spannungen, Journey, Forces of Progress)
 - **Qualitätssicherung:** Zitat-, Sprecher- und Strukturprüfung per Skript, inhaltliche Prüfung neuer Datenpunkte und Verdichtungen gegen Transkript-Ausschnitte – damit nichts halluziniert wird
@@ -87,7 +88,7 @@ flowchart LR
 
 ## affinity-miro
 
-**Board-Layout:** jeder Insight ein Frame (blauer Titel, gelbe Datenpunkte mit ID), Insight-Cluster als pinke und Themen als grüne Zettel, Parkplatz und Lücken als eigene Frames.
+**Board-Layout:** jeder Insight ein Frame (blauer Titel, bei Orchids violett, gelbe Datenpunkte mit ID), Insight-Cluster als pinke und Themen als grüne Zettel, Einzelsignale, Parkplatz und Lücken als eigene Frames.
 
 **Rücksync:** Verschobene Zettel, umformulierte Titel und neue Frames werden übernommen; neue Zitat-Zettel werden im Transkript gesucht, eigene Notizen werden zu Team-Notizen; geänderte Zitate behalten ihren Originalwortlaut, gelöschte Zettel landen auf dem Parkplatz. Vor dem Schreiben bestätigst du die Änderungsliste.
 

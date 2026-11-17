@@ -62,13 +62,19 @@ Geprüft werden alle Insights, die in diesem Schritt neu, verändert, bestätigt
 - **Titel:** durch die Datenpunkte seines Clusters gedeckt – keine Aussage, die erst ein anderer Cluster oder Vorwissen liefert.
 - **Callout-Texte:** Jede Sachbehauptung ist durch einen Datenpunkt belegt. Deutungen sind als Deutung formuliert („wirkt“, „deutet darauf hin“).
 - **Job-Dimensionen:** jede vergebene Dimension durch mindestens einen konkreten Datenpunkt gestützt.
+- **Orchids:** Die genannten Kriterien (a–d) sind durch die Datenpunkte belegt und die Begründung ist nachvollziehbar. Wirkt ein Orchid nur laut, nicht wertvoll, als Befund melden (Vorschlag: in Einzelsignale). Umgekehrt prüfen: Wurde bei Monoclustern wirklich versucht, sie in einen Cluster mit mehreren Origins einzuordnen, ohne den Titel zu überdehnen?
+- **Einzelsignale:** Gibt es dort Datenpunkte, die inzwischen von einer zweiten Person gestützt werden und in einen Cluster gehören?
 - **Herkunftsvermerke** („vereint I04 + I07“) stimmen mit den tatsächlich gewanderten Datenpunkten überein.
-- **Team-Titel** (`#team`, aus Miro): nicht zurücksetzen. Ist ein Team-Titel nicht durch die Datenpunkte gedeckt, nur als Hinweis im QS-Bericht nennen – die Deutungshoheit liegt beim Team.
+- **Team-Änderungen** (`#team`, aus Miro): Titel, Zuordnungen und neue Insights des Teams nicht zurücksetzen und nicht inhaltlich bewerten – die Deutungshoheit liegt beim Team. Die QS prüft hier nur Mechanik (IDs, Zitate, Zählungen).
 - **Kontext, Lücken, Notizen:** Angaben über Personen und Organisation stehen im Transkript oder wurden von der Nutzer:in genannt.
 
 ## Ebene C – Struktur und Konsistenz
 
-Erledigt `amap.py check` vollständig: eindeutige IDs, Block-ID passt zur Person, jeder Datenpunkt genau einmal (Cluster oder Parkplatz), keine verlorenen oder veränderten Datenpunkte gegenüber der Vorversion, Zählungen in Frontmatter, Überblick und Job-Verteilung, Einzelstimme-Markierungen, Insights ohne Job-Dimension oder ohne Datenpunkte, Hinweis bei sehr großen Clustern.
+Erledigt `amap.py check` vollständig: eindeutige IDs, Block-ID passt zur Person, jeder Datenpunkt genau einmal (Cluster, Einzelsignale oder Parkplatz), keine verlorenen oder veränderten Datenpunkte gegenüber der Vorversion, Zählungen in Frontmatter, Überblick und Job-Verteilung, Insights ohne Job-Dimension oder ohne Datenpunkte, Hinweis bei sehr großen Clustern.
+
+Origin-Regel (Origin = Interviewperson, Team zählt nicht):
+- **Fehler:** Monocluster ohne `#orchid` (sobald mindestens zwei Personen in der Map sind); Orchid ohne `> [!example] Orchid`-Callout.
+- **Warnung:** Orchid, der inzwischen von mehreren Personen gestützt wird (Status entfernen, `#bestaetigt`); mehr als etwa 15 % Orchids; Monocluster mit `#team` (vom Team gebildet – nicht zurücksetzen, nur im Bericht nennen).
 
 Manuell zusätzlich:
 - **Pseudonymisierung:** keine Klarnamen von Personen, Firmen oder Orten im gesamten Dokument.

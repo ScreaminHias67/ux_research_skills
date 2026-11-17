@@ -100,9 +100,9 @@ Der Verlauf eines Insights (seit v1 unverändert oder später neu geschnitten) i
 **Belastbarkeit** – allein nach der Evidenz in der finalen Map:
 - **stark:** mehrere Personen, keine Widersprüche
 - **mittel:** wenige Personen oder einzelne Widersprüche
-- **schwach / Hypothese:** Einzelstimme oder dünne Datenbasis
+- **schwach / Hypothese:** Orchid (nur eine Person) oder dünne Datenbasis
 
-Team-Notizen aus Miro sind keine Interviewevidenz und werden nicht zitiert.
+Team-Notizen aus Miro sind gleichwertige Datenpunkte, zählen aber nicht als zusätzliche Person. Orchids können Top-Insights sein und sind dann als solche gekennzeichnet; Einzelsignale sind keine Insights.
 
 ---
 

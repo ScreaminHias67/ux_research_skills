@@ -63,14 +63,16 @@ Die Map auf ein Miro-Board bringen und Änderungen des Teams zurücklesen: Skill
 | Ebene | Inhalt | Titel |
 |---|---|---|
 | **L0 Datenpunkt** | Eine atomare Aussage oder Beobachtung, Zitat oder gekennzeichnete Paraphrase, mit ID und Fundstelle | – |
-| **L1 Voice of the Customer** | Cluster aus Datenpunkten (Richtwert 2–7, keine feste Grenze) | Insight in Ich-Form („Ich möchte …, damit …“, „Immer wenn ich …, dann …“) |
+| **L1 Voice of the Customer** | Cluster aus Datenpunkten (Richtwert 2–7, keine feste Grenze), getragen von mindestens zwei Personen – Ausnahme: Orchid | Insight in Ich-Form („Ich möchte …, damit …“, „Immer wenn ich …, dann …“) |
 | **L2 Insight-Cluster** *(optional)* | Cluster aus L1-Insights | übergeordneter Insight in Ich-Form |
 | **L3 Thema** *(optional)* | Cluster aus L2 | thematische Headline |
 
 Regeln:
 - Faustregel für die Menge: **1 Interviewminute ≈ 1 Datenpunkt.** Der Skill nennt vorab einen Zielwert und begründet im QS-Bericht, wenn er deutlich abweicht – er füllt aber nie künstlich auf.
-- Größere Cluster sind in Ordnung, wenn sie sich nicht sinnvoll teilen lassen; ab etwa 10 Datenpunkten prüft der Skill, ob sich Unter-Insights zeigen. Ein einzelner, starker Datenpunkt darf ein eigener Cluster sein.
-- Jeder Datenpunkt gehört zu genau einem Cluster. Was nicht passt, kommt auf den **Parkplatz**.
+- Größere Cluster sind in Ordnung, wenn sie sich nicht sinnvoll teilen lassen; ab etwa 10 Datenpunkten prüft der Skill, ob sich Unter-Insights zeigen.
+- **Keine Monocluster:** Ein Insight wird grundsätzlich von mindestens zwei Interviewpersonen getragen (Team-Notizen zählen nicht als Person). Der Skill wägt Stärke des Signals gegen Tiefe des Insights ab und schneidet lieber etwas breiter.
+- **Orchids:** Nur außergewöhnlich wertvolle Insights einer einzelnen Person bleiben als eigener Cluster – überraschend, mit hoher Tragweite, einen neuen Mechanismus aufdeckend oder besonders intensiv. Sie sind immer mit `#orchid` und einer Begründung gekennzeichnet, machen höchstens etwa 15 % der Insights aus und verlieren den Status, sobald eine weitere Person sie stützt.
+- Jeder Datenpunkt gehört an genau einen Ort: Cluster, **Einzelsignale** (Gewichtiges von nur einer Person, wartet auf Bestätigung) oder **Parkplatz** (passt inhaltlich nirgends).
 - Insight-Titel beschreiben Bedürfnisse, keine Themen und keine Lösungen.
 - Jeder Insight bekommt eine oder mehrere Job-Dimensionen, jede davon durch Datenpunkte belegt.
 - Ein Coverage-Check zeigt, wie die Dimensionen verteilt sind. Lücken werden benannt, nicht aufgefüllt.
@@ -188,7 +190,7 @@ Ohne Codeausführung arbeitet der Skill nach denselben Regeln manuell und vermer
 
 ## Gut zu wissen
 
-- **Frühe Versionen sind Hypothesen.** Nach ein oder zwei Interviews sind viele Insights `Einzelstimme` – und sie dürfen sich später grundlegend ändern.
+- **Frühe Versionen sind Hypothesen.** Starte möglichst mit zwei Transkripten, damit die Map von Anfang an Insights mehrerer Personen bildet. Bei nur einem Transkript sind die Cluster in v1 vorläufig (`Einzelstimme (vorläufig)`) und werden mit dem zweiten Interview neu bewertet.
 - **Fundstellen:** Zeitstempel oder Zeilennummern im Transkript machen die Rückführung präziser. Fehlen sie, wird der Gesprächsabschnitt (§) nach der Interviewfrage referenziert.
 - **Diarisierungsfehler** im Transkript (falsch zugeordnete Sprecher:innen) werden ausgeschlossen und in den methodischen Notizen begründet.
 - **Pseudonymisierung:** Personen erscheinen als P01, P02 …, Kolleg:innen als Rollen.

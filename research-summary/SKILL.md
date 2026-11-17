@@ -25,7 +25,7 @@ Ergebnis ist eine Markdown-Datei, die in Obsidian gut lesbar ist und per Links d
 
 - **Nichts Neues behaupten:** Die Summary enthält nur, was in der Map oder im Entwicklungsprotokoll steht. Keine neuen Fakten, Zahlen, Zitate oder Deutungen, die die Map nicht trägt.
 - **Jede Aussage hat eine Insight-ID:** Jede inhaltliche Aussage verweist auf mindestens einen Insight (`I06`) oder Aggregat (`L2-B`), verlinkt in die Map.
-- **Zitate unverändert übernehmen:** Zitate werden exakt aus der Map kopiert, inklusive Quellenangabe, und per Block-Link verlinkt: `[[affinity-map_<projekt>_v<n>#^p01-067|P01]]`. Nur Interview-Datenpunkte zitieren, nie Team-Notizen.
+- **Zitate unverändert übernehmen:** Zitate werden exakt aus der Map kopiert, inklusive Quellenangabe, und per Block-Link verlinkt: `[[affinity-map_<projekt>_v<n>#^p01-067|P01]]`. Team-Notizen dürfen genauso zitiert werden, mit Quelle `Team` (`[[…#^team-001|Team]]`).
 - **Belastbarkeit offenlegen:** Jeder Top-Insight bekommt eine Einschätzung der Belastbarkeit (siehe 3.2).
 - **Problemraum statt Lösung:** Handlungsfelder als „Wie könnten wir …?“-Fragen formulieren, nie als Maßnahme.
 - **Ich-Perspektive der Insights bleibt erhalten**, fließtext-Erläuterungen in neutraler Sprache.
@@ -49,7 +49,7 @@ Aus allen Insights 5–8 **Top-Insights** auswählen. Bewertet wird nach:
 
 Der **Verlauf** laut Entwicklungsprotokoll (unverändert seit, neu geschnitten, spät entstanden) ist **kein Auswahl- oder Gütekriterium**: Die Map ordnet sich bottom-up mit jedem Interview neu, ein neu geschnittener Insight ist nicht schwächer als ein unveränderter. Der Verlauf erklärt in der Summary nur, wie das Bild entstanden ist.
 
-Wo die Map L2-Aggregate hat, bevorzugt auf L2-Ebene bündeln und die tragenden L1-Insights nennen. Häufigkeit allein ist kein Grund für die Auswahl; ein stark aufgeladener Einzelbefund kann Top-Insight sein, wird dann aber als solcher gekennzeichnet.
+Wo die Map L2-Aggregate hat, bevorzugt auf L2-Ebene bündeln und die tragenden L1-Insights nennen. Häufigkeit allein ist kein Grund für die Auswahl; ein **Orchid** (`#orchid`, Insight einer einzelnen Person mit begründetem Ausnahmewert) kann Top-Insight sein, wird dann aber als Orchid gekennzeichnet und mit seiner Begründung aus der Map zitiert. **Einzelsignale** sind keine Insights: Sie erscheinen höchstens unter offenen Fragen bzw. als Hinweis für weitere Forschung.
 
 Die Auswahl kurz begründen (ein Satz pro Top-Insight, welche Kriterien greifen).
 
@@ -57,9 +57,9 @@ Die Auswahl kurz begründen (ein Satz pro Top-Insight, welche Kriterien greifen)
 Allein nach der **Evidenz in der finalen Map**, nicht nach dem Verlauf:
 - **stark:** mehrere Personen, mehrere Datenpunkte, keine Widersprüche
 - **mittel:** mehrere Datenpunkte, aber wenige Personen, oder einzelne Widersprüche
-- **schwach / Hypothese:** Einzelstimme oder dünne Datenbasis
+- **schwach / Hypothese:** Orchid (nur eine Person) oder dünne Datenbasis – ein Orchid ist wertvoll, aber nie belastbar im Sinne von „mehrere Personen“
 
-Team-Notizen (`(Team-Notiz)`, aus Miro) sind keine Interviewevidenz und zählen nicht zur Belastbarkeit.
+Team-Notizen (`(Team-Notiz)`, aus Miro) sind gleichwertige Datenpunkte, zählen aber nicht als zusätzliche Person: Belastbarkeit richtet sich nach der Zahl der Interviewpersonen.
 
 Bei frühen Forschungsständen (wenige Interviews) die gesamte Summary als vorläufig kennzeichnen.
 

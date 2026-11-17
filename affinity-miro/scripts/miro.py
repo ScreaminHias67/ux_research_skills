@@ -12,10 +12,11 @@ Befehle (Details: python miro.py <befehl> -h):
            Änderungsliste; mit --apply neue Map-Version (step: miro) schreiben
 
 Board-Layout:
-  L1 Insight          = Frame "I09" mit blauem Titel-Sticky und gelben Datenpunkten
+  L1 Insight          = Frame "I09" mit blauem Titel-Sticky und gelben Datenpunkten;
+                        Orchid (#orchid) = violettes statt blaues Titel-Sticky
   L2 Insight-Cluster  = pinkes Sticky links vor einer Reihe von L1-Frames
   L3 Thema            = grünes Sticky über einem Block von L2-Reihen
-  Parkplatz, Lücken   = eigene Frames; Lücken als graue Stickies
+  Einzelsignale, Parkplatz, Lücken = eigene Frames; Lücken als graue Stickies
   Datenpunkt-ID (P03-007) steht als letzte Zeile im Sticky.
 """
 
@@ -45,12 +46,13 @@ BLOCK_GAP = 320
 FRAME_GAP = 160
 SVG_LIMIT = 180000
 
-COLOR = {"dp": "yellow", "team": "orange", "l1": "light_blue", "l2": "light_pink",
+COLOR = {"dp": "yellow", "team": "orange", "l1": "light_blue", "orchid": "violet", "l2": "light_pink",
          "l3": "light_green", "gap": "gray"}
 COLOR_CLASS = {
     "yellow": "dp", "light_yellow": "dp", "orange": "dp",
     "light_blue": "l1", "blue": "l1", "dark_blue": "l1", "cyan": "l1",
-    "light_pink": "l2", "pink": "l2", "violet": "l2",
+    "violet": "l1",                     # Orchid-Titel (L1); Farbe entscheidet über #orchid
+    "light_pink": "l2", "pink": "l2",
     "light_green": "l3", "green": "l3", "dark_green": "l3",
     "gray": "gap",
 }
@@ -61,7 +63,7 @@ DP_ID_RE = re.compile(r"\^((?:p\d+|team)-\d+)\s*$", re.I)
 STICKY_ID_RE = re.compile(r"^\s*((?:P\d+|TEAM)-\d+)\s*$", re.I)
 INSIGHT_RE = re.compile(r"^(#{2,4})\s+(I\d+)\b\s*(.*)$")
 HEADING_RE = re.compile(r"^(#{1,6})\s+(.*)$")
-TRAILING = ("parkplatz", "lücken", "methodische notizen", "qs-bericht")
+TRAILING = ("einzelsignale", "parkplatz", "lücken", "methodische notizen", "qs-bericht")
 STEP_TAGS = ("#neu", "#bestaetigt", "#geaendert", "#widerspruch", "#robust", "#team")
 
 
@@ -134,6 +136,7 @@ class MapDoc(object):
         self.insights = OrderedDict()   # id -> dict(title, extra[], dps[], l2, l3, level)
         self.dp_lines = OrderedDict()   # id -> Zeile
         self.parkplatz = []             # dp ids
+        self.einzelsignale = []         # dp ids
         self.gaps = []                  # Lücken-Zeilen (Text)
         self.l1_level = None
         for line in lines:
@@ -172,7 +175,8 @@ class MapDoc(object):
                 region = "groups"
                 cur = mi.group(2)
                 self.insights[cur] = {"title": clean_title(mi.group(3)), "heading_rest": mi.group(3),
-                                      "extra": [], "dps": [], "l2": l2, "l3": l3}
+                                      "extra": [], "dps": [], "l2": l2, "l3": l3,
+                                      "orchid": "#orchid" in mi.group(3)}
                 continue
             mdp = DP_ID_RE.search(line)
             if mdp and line.lstrip().startswith("-"):
@@ -180,6 +184,8 @@ class MapDoc(object):
                 self.dp_lines[dpid] = line
                 if region == "groups" and cur:
                     self.insights[cur]["dps"].append(dpid)
+                elif region == "trailing" and tsec.lower().startswith("einzelsignale"):
+                    self.einzelsignale.append(dpid)
                 elif region == "trailing" and tsec.lower().startswith("parkplatz"):
                     self.parkplatz.append(dpid)
                 else:
@@ -190,6 +196,8 @@ class MapDoc(object):
             elif region == "groups":
                 if cur:
                     self.insights[cur]["extra"].append(line)
+                    if re.search(r"#orchid\b", line) and not line.startswith(">"):
+                        self.insights[cur]["orchid"] = True
             elif region == "trailing":
                 self.trailing[tsec].append(line)
                 if tsec.lower().startswith("lücken") and line.lstrip().startswith("-"):
@@ -237,7 +245,7 @@ def insight_frame(doc, iid, ins, fx, fy):
     w, h = frame_size(len(ins["dps"]), FRAME_COLS, True)
     out = ['<g id="f_%s" transform="translate(%d,%d)" data-frame="%s">' % (iid, fx, fy, iid),
            '<rect data-type="frame" x="0" y="0" width="%d" height="%d" fill="#ffffff" data-title="%s" />' % (w, h, iid),
-           sticky(PAD, PAD, SW, SH, COLOR["l1"], attr(ins["title"]))]
+           sticky(PAD, PAD, SW, SH, COLOR["orchid" if ins["orchid"] else "l1"], attr(ins["title"]))]
     y0 = PAD + SH + 32
     for k, dpid in enumerate(ins["dps"]):
         r, c = divmod(k, FRAME_COLS)
@@ -282,7 +290,8 @@ def cmd_export(a):
     modules = []   # (svg-zeilen) je Modul, für Aufteilung in mehrere Dateien
     today = datetime.date.today().isoformat()
     legend = ("<b>%s</b><br/>Stand: %s · exportiert %s<br/>"
-              "gelb = Datenpunkt · orange = Team-Notiz · blau = Insight · pink = Insight-Cluster · "
+              "gelb = Datenpunkt · orange = Team-Notiz · blau = Insight · violett = Orchid (Insight einer Person, "
+              "bewusst behalten) · pink = Insight-Cluster · "
               "grün = Thema · grau = Lücke<br/>"
               "IDs (z. B. P03-007, I09) bitte nicht löschen oder ändern. Zettel verschieben, Titel umformulieren, "
               "neue Frames und neue Zettel ohne ID sind willkommen.") % (
@@ -320,15 +329,19 @@ def cmd_export(a):
                 y += line_h + ROW_GAP
         y += BLOCK_GAP - ROW_GAP
 
-    # Parkplatz + Lücken
-    pk_items = [(COLOR["team"] if d.startswith("team") else COLOR["dp"], dp_sticky_content(doc, d)) for d in doc.parkplatz]
-    svg, w, h = simple_frame("Parkplatz", "f_parkplatz", pk_items, 4, x0, y + 48)
+    # Einzelsignale + Parkplatz + Lücken
+    def dp_items(ids):
+        return [(COLOR["team"] if d.startswith("team") else COLOR["dp"], dp_sticky_content(doc, d)) for d in ids]
+    svg0, w0, h0 = simple_frame("Einzelsignale", "f_einzelsignale", dp_items(doc.einzelsignale), 4, x0, y + 48)
+    modules.append(svg0)
+    xp = x0 + w0 + FRAME_GAP
+    svg, w, h = simple_frame("Parkplatz", "f_parkplatz", dp_items(doc.parkplatz), 4, xp, y + 48)
     modules.append(svg)
     gaps = [(COLOR["gap"], attr(g)) for g in doc.gaps]
-    svg2, w2, h2 = simple_frame("Lücken & offene Fragen", "f_luecken", gaps, 2, x0 + w + FRAME_GAP, y + 48)
+    svg2, w2, h2 = simple_frame("Lücken & offene Fragen", "f_luecken", gaps, 2, xp + w + FRAME_GAP, y + 48)
     modules.append(svg2)
-    max_x = max(max_x, x0 + w + FRAME_GAP + w2)
-    y_end = y + 48 + max(h, h2)
+    max_x = max(max_x, xp + w + FRAME_GAP + w2)
+    y_end = y + 48 + max(h0, h, h2)
     bbox = [x0, y0, max_x - x0, y_end - y0]
 
     # In Dateien aufteilen (Limit des MCP-Aufrufs)
@@ -500,15 +513,34 @@ def transcript_hits(text, transcripts):
             if not ok:
                 break
         if ok:
-            hits.append((tid, first_line))
+            hits.append((tid, first_line, line_timestamp(t["lines"], first_line)))
     return hits
 
 
-def max_insight_id(map_path):
+TS_RE = re.compile(r"\[?(\d{1,2}:\d{2}(?::\d{2})?)\]?")
+
+
+def line_timestamp(lines, n):
+    """Zeitstempel der Zeile n oder der nächsten Zeile davor (Folgezeilen eines Redebeitrags)."""
+    if not n:
+        return None
+    for i in range(n - 1, -1, -1):
+        m = TS_RE.match(lines[i].strip())
+        if m:
+            ts = m.group(1)
+            return ts if ts.count(":") == 2 else "00:" + ts
+    return None
+
+
+def max_insight_id(map_path, exclude=None):
+    """Höchste vergebene Insight-ID über alle Versionen – ohne die Zieldatei von --apply."""
     d = os.path.dirname(os.path.abspath(map_path))
     proj = project_of(map_path)
+    skip = os.path.abspath(exclude) if exclude else None
     mx = 0
     for p in glob.glob(os.path.join(d, "affinity-map_%s_v*.md" % glob.escape(proj))) + [map_path]:
+        if skip and os.path.abspath(p) == skip:
+            continue
         for m in re.finditer(r"\bI(\d+)\b", read(p)):
             mx = max(mx, int(m.group(1)))
     return mx
@@ -544,15 +576,18 @@ def cmd_diff(a):
     # --- Frames klassifizieren
     l2s = sorted([s for s in loose if s["cls"] == "l2"], key=lambda s: s["y"])
     l3s = sorted([s for s in loose if s["cls"] == "l3"], key=lambda s: s["y"])
-    next_id = max_insight_id(a.map) + 1
+    next_id = max_insight_id(a.map, a.apply) + 1
     board_ins = OrderedDict()
-    pk_board, gap_board, loose_dp = [], [], []
+    pk_board, es_board, gap_board, loose_dp = [], [], [], []
     seen_ids = {}
 
     for fr in sorted(frames, key=lambda f: (f["y"], f["x"])):
         low = fr["title"].lower()
         if low.startswith("parkplatz"):
             pk_board.extend(fr["stickies"])
+            continue
+        if low.startswith("einzelsignale"):
+            es_board.extend(fr["stickies"])
             continue
         if low.startswith("lücken") or low.startswith("luecken"):
             gap_board.extend(fr["stickies"])
@@ -573,7 +608,8 @@ def cmd_diff(a):
         titles = sorted([s for s in fr["stickies"] if s["cls"] == "l1"], key=lambda s: (s["y"], s["x"]))
         title = titles[0]["text"] if titles else re.sub(r"^\s*I\d+\s*", "", fr["title"]).strip() or "(ohne Titel)"
         if len(titles) > 1:
-            warn.append("%s: mehrere blaue Titel-Stickies – oberstes verwendet, weitere als Team-Notiz." % iid)
+            warn.append("%s: mehrere blaue/violette Titel-Stickies – oberstes verwendet, weitere als Team-Notiz." % iid)
+        orchid = bool(titles) and titles[0]["color"] == COLOR["orchid"]
         items = [s for s in fr["stickies"] if s not in titles[:1]]
         # L2/L3 räumlich
         l3 = None
@@ -586,7 +622,9 @@ def cmd_diff(a):
                 l2 = s
         if l2s and l2 is None:
             warn.append("%s: keinem pinken Insight-Cluster eindeutig zuzuordnen." % iid)
-        board_ins[iid] = {"title": title, "new": is_new, "items": items, "frame": fr,
+        frame_label = fr["title"] if is_new and fr["title"] and not re.match(r"^\s*I\d+\s*$", fr["title"]) else None
+        board_ins[iid] = {"title": title, "new": is_new, "items": items, "frame": fr, "frame_label": frame_label,
+                          "orchid": orchid,
                           "l2": l2["text"] if l2 else None, "l3": l3["text"] if l3 else None}
 
     loose_dp = [s for s in loose if s["cls"] not in ("l2", "l3")]
@@ -619,6 +657,8 @@ def cmd_diff(a):
     for iid, bi in board_ins.items():
         for st in sorted(bi["items"], key=lambda s: (s["y"], s["x"])):
             take(st, iid)
+    for st in sorted(es_board, key=lambda s: (s["y"], s["x"])):
+        take(st, "einzelsignale")
     for st in sorted(pk_board, key=lambda s: (s["y"], s["x"])):
         take(st, "parkplatz")
     for st in loose_dp:
@@ -641,10 +681,14 @@ def cmd_diff(a):
             old_of[d] = iid
     for d in doc.parkplatz:
         old_of[d] = "parkplatz"
+    for d in doc.einzelsignale:
+        old_of[d] = "einzelsignale"
     moved = [(d, old_of.get(d), t) for d, t in placement.items() if old_of.get(d) != t and d not in missing]
     renamed = [(iid, doc.insights[iid]["title"], bi["title"]) for iid, bi in board_ins.items()
                if not bi["new"] and norm(bi["title"]) != norm(doc.insights[iid]["title"])]
     new_ins = [iid for iid, bi in board_ins.items() if bi["new"]]
+    orchid_set = [iid for iid, bi in board_ins.items() if not bi["new"] and bi["orchid"] and not doc.insights[iid]["orchid"]]
+    orchid_unset = [iid for iid, bi in board_ins.items() if not bi["new"] and not bi["orchid"] and doc.insights[iid]["orchid"]]
     members = {iid: [d for d, t in placement.items() if t == iid] for iid in board_ins}
     dissolved = [iid for iid in doc.insights if iid not in board_ins or not members.get(iid)]
     regroup = []
@@ -659,14 +703,23 @@ def cmd_diff(a):
 
     # --- Bericht
     def where(t):
-        return "Parkplatz" if t == "parkplatz" else (t or "–")
+        return {"parkplatz": "Parkplatz", "einzelsignale": "Einzelsignale"}.get(t, t or "–")
     print("## Änderungen auf dem Board (Basis: %s → neue Version v%d)\n" % (os.path.basename(a.map), new_v))
     sec = [
         ("Verschobene Datenpunkte", ["%s: %s → %s" % (d.upper(), where(o), where(t)) for d, o, t in moved]),
         ("Umformulierte Titel", ["%s: „%s“ → „%s“" % x for x in renamed]),
-        ("Neue Insights (vom Team gebildet)", ["%s „%s“ mit %d Zettel(n)" % (i, board_ins[i]["title"], len(members[i]) + sum(1 for t, _, _ in team_new if t == i)) for i in new_ins]),
-        ("Aufgelöste Insights", ["%s „%s“" % (i, doc.insights[i]["title"]) for i in dissolved]),
-        ("Neu zugeordnet (L2/L3, räumlich erkannt – bitte prüfen)", ["%s %s: „%s“ → „%s“" % (i, lv, o or "–", n or "–") for i, lv, o, n in regroup]),
+        ("Orchid gesetzt (Titel-Sticky violett gefärbt)", ["%s „%s“" % (i, board_ins[i]["title"]) for i in orchid_set]),
+        ("Orchid entfernt (Titel-Sticky nicht mehr violett)", ["%s „%s“" % (i, board_ins[i]["title"]) for i in orchid_unset]),
+        ("Neue Insights (vom Team gebildet)", ["%s „%s“ mit %d Zettel(n)%s%s%s" % (
+            i, board_ins[i]["title"], len(members[i]) + sum(1 for t, _, _ in team_new if t == i),
+            " · Orchid" if board_ins[i]["orchid"] else "",
+            " · Frame „%s“" % board_ins[i]["frame_label"] if board_ins[i]["frame_label"] else "",
+            "".join(" · %s: „%s“" % (lv, board_ins[i][k]) for lv, k in (("L3", "l3"), ("L2", "l2")) if board_ins[i][k]))
+            for i in new_ins]),
+        ("Aufgelöste Insights", ["%s „%s“%s" % (i, doc.insights[i]["title"],
+                                                " (Frame noch auf dem Board, ohne Datenpunkte)" if i in board_ins else "")
+                                 for i in dissolved]),
+        ("Neu zugeordnet (L2/L3 nach Board-Lage)", ["%s %s: „%s“ → „%s“" % (i, lv, o or "–", n or "–") for i, lv, o, n in regroup]),
         ("Neue Zettel ohne ID", []),
         ("Zitattext auf dem Board verändert (Original bleibt)", ["%s: Board „%s“" % (d.upper(), t[:80]) for d, t in edited]),
         ("Vom Board entfernt (→ Parkplatz)", [d.upper() for d in missing]),
@@ -675,13 +728,13 @@ def cmd_diff(a):
     for target, text, hit in team_new:
         if isinstance(hit, tuple):
             pid = t2p.get(hit[0], "?")
-            sec[5][1].append("in %s: %s – im Transkript %s gefunden (Z. %s, vermutlich %s) → Datenpunkt" % (
-                where(target), quoted(text[:80]), hit[0], hit[1], pid))
+            sec[7][1].append("in %s: %s – im Transkript %s gefunden (%s, vermutlich %s) → Datenpunkt" % (
+                where(target), quoted(text[:80]), hit[0], hit[2] or "Z. %s" % hit[1], pid))
         elif isinstance(hit, list):
-            sec[5][1].append("in %s: %s – in mehreren Transkripten gefunden (%s) → Rückfrage" % (
+            sec[7][1].append("in %s: %s – in mehreren Transkripten gefunden (%s) → Rückfrage" % (
                 where(target), quoted(text[:80]), ", ".join(h[0] for h in hit)))
         else:
-            sec[5][1].append("in %s: %s → Team-Notiz" % (where(target), quoted(text[:80])))
+            sec[7][1].append("in %s: %s → Team-Notiz" % (where(target), quoted(text[:80])))
     total = 0
     for title, items in sec:
         if items:
@@ -724,7 +777,7 @@ def cmd_diff(a):
             person_n[num] = person_n.get(num, 0) + 1
             dpid = "p%s-%03d" % (num, person_n[num])
             q = text if re.search(r"„.+“", text) else "„%s“" % text.strip("\"")
-            line = "- %s — %s · %s, Z. %s · neu ^%s" % (q, pid, hit[0], hit[1], dpid)
+            line = "- %s — %s · %s, %s · neu ^%s" % (q, pid, hit[0], hit[2] or "Z. %s" % hit[1], dpid)
         else:
             team_n += 1
             line = "- (Team-Notiz) %s — Team · Miro v%d · neu ^team-%03d" % (text, new_v, team_n)
@@ -751,14 +804,15 @@ def cmd_diff(a):
             continue
         skip = False
         out_prefix.append(l)
-    while out_prefix and not out_prefix[-1].strip():
+    while out_prefix and (not out_prefix[-1].strip() or out_prefix[-1].strip() == "---"):
         out_prefix.pop()
     body.extend(out_prefix)
     body.append("")
     body.append("> [!note] Änderungen in v%d (Miro-Board)" % new_v)
-    body.append("> %d verschobene Datenpunkte, %d umformulierte Titel, %d neue und %d aufgelöste Insights, %d neue Zettel. "
-                "Details: [[map-entwicklung_%s#v%d – Miro]]" % (len(moved), len(renamed), len(new_ins), len(dissolved),
-                                                             len(team_new), proj, new_v))
+    body.append("> %d verschobene Datenpunkte, %d umformulierte Titel, %d neue und %d aufgelöste Insights, %d neue Zettel, "
+                "%d Orchid-Änderungen. Details: [[map-entwicklung_%s#v%d – Miro]]" % (
+                    len(moved), len(renamed), len(new_ins), len(dissolved), len(team_new),
+                    len(orchid_set) + len(orchid_unset), proj, new_v))
     body.append("")
     body.append("---")
 
@@ -776,19 +830,27 @@ def cmd_diff(a):
             cur_l2 = l2
         changed = iid in moved_in or iid in moved_out or iid in new_lines
         if bi["new"]:
-            body += ["", "%s %s „%s“" % (l1h, iid, bi["title"]), "#job/offen #team #neu",
-                     "> [!tip] Neu in v%d" % new_v, "> Vom Team auf dem Miro-Board gebildet. Job-Dimensionen und VoC-Text noch festlegen.", ""]
+            label = " Frame-Titel auf dem Board: „%s“." % bi["frame_label"] if bi["frame_label"] else ""
+            body += ["", "%s %s „%s“" % (l1h, iid, bi["title"]),
+                     "#job/offen%s #team #neu" % (" #orchid" if bi["orchid"] else ""),
+                     "> [!tip] Neu in v%d" % new_v,
+                     "> Vom Team auf dem Miro-Board gebildet.%s Job-Dimensionen und VoC-Text noch festlegen." % label, ""]
+            if bi["orchid"]:
+                body += ["> [!example] Orchid", "> Vom Team auf dem Board als Orchid markiert (violett). "
+                         "Kriterien und Begründung noch ergänzen.", ""]
         else:
             o = doc.insights[iid]
             title = bi["title"] if (iid, o["title"], bi["title"]) in renamed else o["title"]
             rest = o["heading_rest"]
-            m_tags = " ".join(re.findall(r"#[\w/äöü-]+", rest))
+            m_tags = " ".join(t for t in re.findall(r"#[\w/äöü-]+", rest)
+                              if not (t == "#orchid" and iid in orchid_unset))
             body += ["", ("%s %s „%s“ %s" % (l1h, iid, title, m_tags)).rstrip()]
             extra = [strip_step_marks(l) for l in o["extra"] if l.strip() != "---"]
-            # Schritt-Callouts der Vorversion entfernen
+            # Schritt-Callouts der Vorversion entfernen; Orchid-Callout nur, wenn das Team den Orchid entfernt hat
             cleaned, skip = [], False
             for l in extra:
-                if re.match(r"^>\s*\[!(tip|abstract)\]\s*(Neu in|Geändert in)\b", l):
+                if re.match(r"^>\s*\[!(tip|abstract)\]\s*(Neu in|Geändert in)\b", l) or (
+                        iid in orchid_unset and re.match(r"^>\s*\[!example\]\s*Orchid", l)):
                     skip = True
                     continue
                 if skip and l.startswith(">"):
@@ -800,10 +862,16 @@ def cmd_diff(a):
             while cleaned and not cleaned[-1].strip():
                 cleaned.pop()
             renamed_here = (iid, o["title"], bi["title"]) in renamed
+            orchid_here = iid in orchid_set or iid in orchid_unset
+            changed = changed or orchid_here
             if cleaned and re.search(r"#job/", cleaned[0]):
                 tagline = cleaned.pop(0)
             else:
                 tagline = ""
+            if iid in orchid_unset:
+                tagline = re.sub(r"\s*#orchid\b", "", tagline)
+            if iid in orchid_set and "#orchid" not in tagline:
+                tagline = (tagline + " #orchid").strip()
             if renamed_here or changed:
                 tagline = (tagline + " #team" + (" #geaendert" if renamed_here else "")).strip()
             if tagline:
@@ -813,12 +881,19 @@ def cmd_diff(a):
                 if renamed_here:
                     info.append("Titel vom Team umformuliert; vorher: „%s“" % o["title"])
                 if iid in moved_in:
-                    info.append("hinzu: " + ", ".join("%s (aus %s)" % (d, where(f)) for d, f in moved_in[iid]))
+                    info.append("hinzu: " + ", ".join("%s (aus %s)" % (d.upper(), where(f)) for d, f in moved_in[iid]))
                 if iid in moved_out:
-                    info.append("weg: " + ", ".join("%s (nach %s)" % (d, where(t)) for d, t in moved_out[iid]))
+                    info.append("weg: " + ", ".join("%s (nach %s)" % (d.upper(), where(t)) for d, t in moved_out[iid]))
                 if iid in new_lines:
                     info.append("%d neue Zettel vom Board" % len(new_lines[iid]))
+                if iid in orchid_set:
+                    info.append("vom Team als Orchid markiert")
+                if iid in orchid_unset:
+                    info.append("Orchid-Status vom Team entfernt")
                 body += ["> [!abstract] Geändert in v%d (Miro)" % new_v, "> " + "; ".join(info) + "."]
+                if iid in orchid_set:
+                    body += ["", "> [!example] Orchid", "> Vom Team auf dem Board als Orchid markiert (violett). "
+                             "Kriterien und Begründung noch ergänzen."]
             if cleaned:
                 body += [""] + cleaned
             body.append("")
@@ -826,7 +901,24 @@ def cmd_diff(a):
             body.append(strip_step_marks(doc.dp_lines[d]))
         body += new_lines.get(iid, [])
 
-    body += ["", "---", "", "## Parkplatz"]
+    method_notes = []
+    for i in dissolved:
+        o = doc.insights[i]
+        tags = " ".join(re.findall(r"#job/[\w/äöü-]+", " ".join([o["heading_rest"]] + o["extra"])))
+        where_to = ", ".join("%s → %s" % (d.upper(), where(t)) for d, t in moved_out.get(i, []))
+        method_notes.append("- %s „%s“%s auf dem Miro-Board aufgelöst (v%d)%s." % (
+            i, o["title"], " (%s)" % tags if tags else "", new_v, ": " + where_to if where_to else ""))
+    method_notes += ["- %s wurde auf dem Miro-Board entfernt (v%d) und liegt auf dem Parkplatz." % (d.upper(), new_v)
+                     for d in missing]
+    method_notes += ["- %s: Text auf dem Board verändert („%s“); Originalwortlaut beibehalten." % (d.upper(), t[:80])
+                     for d, t in edited]
+
+    es_lines = [strip_step_marks(doc.dp_lines[d]) for d, t in placement.items() if t == "einzelsignale"]
+    es_lines += new_lines.get("einzelsignale", [])
+    body += ["", "---"]
+    if es_lines or doc.einzelsignale:
+        body += ["", "## Einzelsignale"] + es_lines
+    body += ["", "## Parkplatz"]
     for d, t in placement.items():
         if t == "parkplatz":
             body.append(strip_step_marks(doc.dp_lines[d]))
@@ -834,7 +926,7 @@ def cmd_diff(a):
 
     for sec_title, lines in doc.trailing.items():
         low = sec_title.lower()
-        if low.startswith("parkplatz") or low.startswith("qs-bericht"):
+        if low.startswith(("parkplatz", "einzelsignale", "qs-bericht")):
             continue
         content = [l for l in lines if not DP_ID_RE.search(l)]
         while content and not content[-1].strip():
@@ -843,16 +935,11 @@ def cmd_diff(a):
         if low.startswith("lücken"):
             body += ["- (Team, Miro v%d) %s" % (new_v, g) for g in gaps_new]
         if low.startswith("methodische notizen"):
-            for d in missing:
-                body.append("- %s wurde auf dem Miro-Board entfernt (v%d) und liegt auf dem Parkplatz." % (d, new_v))
-            for d, t in edited:
-                body.append("- %s: Text auf dem Board verändert („%s“); Originalwortlaut beibehalten." % (d, t[:80]))
+            body += method_notes
     if gaps_new and not any(k.lower().startswith("lücken") for k in doc.trailing):
         body += ["", "## Lücken & offene Fragen"] + ["- (Team, Miro v%d) %s" % (new_v, g) for g in gaps_new]
-    if (missing or edited) and not any(k.lower().startswith("methodische") for k in doc.trailing):
-        body += ["", "## Methodische Notizen"]
-        body += ["- %s wurde auf dem Miro-Board entfernt (v%d) und liegt auf dem Parkplatz." % (d, new_v) for d in missing]
-        body += ["- %s: Text auf dem Board verändert („%s“); Originalwortlaut beibehalten." % (d, t[:80]) for d, t in edited]
+    if method_notes and not any(k.lower().startswith("methodische") for k in doc.trailing):
+        body += ["", "## Methodische Notizen"] + method_notes
 
     text = re.sub(r"\n{3,}", "\n\n", "\n".join(body)).strip() + "\n"
     n_dp = len(placement) + len(team_new)
